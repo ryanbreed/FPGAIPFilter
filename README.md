@@ -8,6 +8,7 @@ For test data input use USB Blaster.
 
 ## TODO
 - FTDI haskell lib is old - fix?
+- Use: https://github.com/tau-tao/bindings-libftdi (similar to the python example and compiles under ghc 7.10)
 
 
 ### Resources:
