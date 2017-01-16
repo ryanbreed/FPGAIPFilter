@@ -37,6 +37,10 @@ resolver: lts-6.27
 # will not be run. This is useful for tweaking upstream packages.
 packages:
 - '.'
+- location:
+    git: https://github.com/tau-tao/bindings-libftdi.git
+    commit: fbd69d968ca0a9eff9f8778e59bdf81f7c3b11fb
+  extra-dep: true
 
 # Dependency packages to be pulled from upstream that are not in the resolver
 # (e.g., acme-missiles-0.3)
@@ -46,11 +50,7 @@ extra-deps:
     - tfp-0.3
     - vhdl-0.1.2.1
     - clash-ghc-0.6.24
-    - usb-0.3.1
-    - bindings-libusb-1.4.5.0
-    - iteratee-0.3.6
-    - ftdi-0.2.0.1
-
+#    - bindings-libftdi-0.1.0.1
 
 # Override default flag values for local packages and extra-deps
 flags: {}
