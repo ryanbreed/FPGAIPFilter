@@ -50,6 +50,7 @@ executable FPGAIPFilter-ftdi-test
     build-depends:       base
                        , FPGAIPFilter
                        , bindings-libftdi
+                       , text
                        , protolude >= 0.1.6 && < 0.2
     ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N
     default-language:    Haskell2010
