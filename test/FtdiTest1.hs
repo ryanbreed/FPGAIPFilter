@@ -9,7 +9,8 @@ import           Protolude
 -- Derived from https://github.com/GeezerGeek/open_sld/blob/master/sld_interface.py,
 -- And: http://sourceforge.net/p/ixo-jtag/code/HEAD/tree/usb_jtag/
 
--- Load the initialTest.sof from open_sld and run... ;-)
+-- Load the initialTest.sof from open_sld on the board and run... ;-)
+-- The initial test wires the DS0-Nano LED bank up to the SLD
 
 -- @TODO add Read
 
@@ -142,7 +143,7 @@ outLed d v = do
   l <- virWrite d $ toBits 5 0x11
   l1 <- vdrWrite d $ toBits 7 v
   l2 <- virWrite d $ toBits 5 0x10
-  threadDelay 40000
+  threadDelay 20000
   return $ l + l1 + l2
 
 doStuff :: DeviceHandle -> IO ()
@@ -151,6 +152,8 @@ doStuff d = do
   ftdiUSBReset d
   _ <- tapReset d
   _ <- mapM (outLed d) [0..127]
+  _ <- mapM (outLed d) $ join $ replicate 16 [1, 2, 4, 8, 16, 32, 64, 32, 16, 8, 4, 2, 1]
+  _ <- mapM (outLed d) [127,126..0]
   putStrLn ("Init OK." :: Text)
   ftdiUSBClose d
   ftdiDeInit d
