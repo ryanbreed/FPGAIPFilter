@@ -6,10 +6,15 @@ Develop simple clash IP packet filter for the DE0-Nano board.
 
 For test data input use USB Blaster.
 
-## TODO
-- FTDI haskell lib is old - fix?
-- Use: https://github.com/tau-tao/bindings-libftdi (similar to the python example and compiles under ghc 7.10)
+## Status
+- Using https://github.com/victoredwardocallaghan/bindings-libftdi (forked @ https://github.com/tau-tao/bindings-libftdi) can drive the initial test sample
+test/FtdiTest1.hs
 
+## Todo
+- See projects / issues
+
+## Maybe
+- FTDI haskell lib is old - fix?
 
 ### Resources:
 
