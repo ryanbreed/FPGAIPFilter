@@ -7,8 +7,7 @@ Develop simple clash IP packet filter for the DE0-Nano board.
 For test data input use USB Blaster.
 
 ## Status
-- Using https://github.com/victoredwardocallaghan/bindings-libftdi (forked @ https://github.com/tau-tao/bindings-libftdi) can drive the initial test sample
-test/FtdiTest1.hs
+- Using https://github.com/victoredwardocallaghan/bindings-libftdi (forked @ https://github.com/tau-tao/bindings-libftdi) can drive the "InitialTest.sof" sample from test/FtdiTest1.hs
 
 ## Todo
 - See projects / issues
