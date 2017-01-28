@@ -1,9 +1,10 @@
 {-# LANGUAGE FlexibleContexts #-}
 
-import qualified Data.Text as T
 import qualified Data.ByteString as B
-import           LibFtdi   (DeviceHandle, ftdiDeInit, ftdiInit, ftdiUSBClose,
-                            ftdiUSBOpen, ftdiUSBReset, withFtdi, ftdiWriteData)
+import qualified Data.Text       as T
+import           LibFtdi         (DeviceHandle, ftdiDeInit, ftdiInit,
+                                  ftdiUSBClose, ftdiUSBOpen, ftdiUSBReset,
+                                  ftdiWriteData, ftdiReadData, withFtdi)
 import           Protolude
 
 -- Derived from https://github.com/GeezerGeek/open_sld/blob/master/sld_interface.py,
@@ -107,6 +108,18 @@ jtagWriteBits::DeviceHandle -> [Bool] -> IO Int
 jtagWriteBits d bits = ftdiWriteData d $ B.pack $
       mkBytesJtag (revSplitMsb bits) jtagM0D0 jtagM0D1 jtagM1D0 jtagM1D1
 
+lsbToBool :: [Word8] -> [Bool]
+lsbToBool b = fmap (\v -> v .&. 1 /= 0) b
+
+jtagWriteReadBits::DeviceHandle -> [Bool] -> IO (Int, [Bool])
+jtagWriteReadBits d bits = do
+  sz <- ftdiWriteData d $ B.pack $
+          mkBytesJtag (revSplitMsb bits) jtagM0D0R jtagM0D1R jtagM1D0R jtagM1D1R
+  rd <- ftdiReadData d (length bits)
+  case rd of
+    Just r -> return (sz, lsbToBool $ B.unpack r)
+    _ -> return (sz, [])
+
 tapReset::DeviceHandle -> IO Int
 tapReset d = ftdiWriteData d $ B.pack $ jtagTAP_RESET ++ jtagTAP_IDLE
 
@@ -132,17 +145,27 @@ virWrite d b = do
 
 vdrWrite::DeviceHandle -> [Bool] -> IO Int
 vdrWrite d b = do
-  l <- irWrite d $ toBits 10 0xC
+  l <- irWrite d $ toBits 10 0xC1
   l1 <- ftdiWriteData d $ B.pack jtagTAP_SHIFT_DR
   l2 <- jtagWriteBits d b
   l3 <- ftdiWriteData d $ B.pack jtagTAP_END_SHIFT
   return $ l + l1 + l2 + l3
 
+-- vdrWriteRead::DeviceHandle -> [Bool] -> IO (Int, [Bool])
+vdrWriteRead d b = do
+  l <- irWrite d $ toBits 10 0xC
+  l1 <- ftdiWriteData d $ B.pack jtagTAP_SHIFT_DR
+  (l2, r) <- jtagWriteReadBits d b
+  l3 <- ftdiWriteData d $ B.pack jtagTAP_END_SHIFT
+  return (l + l1 + l2 + l3, r)
+
 outLed :: DeviceHandle -> Word32 -> IO Int
 outLed d v = do
   l <- virWrite d $ toBits 5 0x11
-  l1 <- vdrWrite d $ toBits 7 v
+  (l1, rd) <- vdrWriteRead d $ toBits 7 v
+  -- l1 <- vdrWrite d $ toBits 7 v
   l2 <- virWrite d $ toBits 5 0x10
+  print rd
   threadDelay 20000
   return $ l + l1 + l2
 
