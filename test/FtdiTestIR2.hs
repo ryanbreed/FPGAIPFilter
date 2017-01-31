@@ -7,22 +7,35 @@ import           LibFtdi         (DeviceHandle, ftdiDeInit, ftdiInit,
                                   ftdiWriteData, ftdiReadData, withFtdi)
 import           Protolude
 
+-- FOR /home/jason/Develop/haskell/FPGAIPFilter_1/DE0_Nano_JTAG_RW.qar
+
 -- Derived from https://github.com/GeezerGeek/open_sld/blob/master/sld_interface.py,
 -- And: http://sourceforge.net/p/ixo-jtag/code/HEAD/tree/usb_jtag/
 
 -- Load the initialTest.sof from open_sld on the board and run... ;-)
 -- The initial test wires the DS0-Nano LED bank up to the SLD
 
--- @TODO add Read
-
-jtagOFF, jtagTCK, jtagTMS, jtagTDI, jtagLED, jtagRD, jtagSHM :: Word8
+jtagOFF, jtagTCK, jtagTMS, jtagTDI, jtagLED, jtagRD, jtagSHM, jtagnCE, jtagnCS :: Word8
 jtagOFF = 0x00
 jtagTCK = 0x01
 jtagTMS = 0x02
+jtagnCE = 0x04
+jtagnCS = 0x08
 jtagTDI = 0x10
 jtagLED = 0x20
 jtagRD  = 0x40
 jtagSHM = 0x80
+
+irAddrVir, irAddrVdr :: Word16
+irAddrVir = 0x0E
+irAddrVdr = 0x0C
+
+virAddrBase :: Word8
+virAddrBase = 0x10
+
+irAddrLen, virAddrLen :: Int
+irAddrLen  = 10
+virAddrLen = 5
 
 jtagM0D0R, jtagM0D1R, jtagM1D0R, jtagM1D1R :: [Word8]
 -- Bit-mode - Two byte codes
@@ -123,7 +136,7 @@ jtagWriteReadBits d bits = do
 tapReset::DeviceHandle -> IO Int
 tapReset d = ftdiWriteData d $ B.pack $ jtagTAP_RESET ++ jtagTAP_IDLE
 
-toBits :: Int -> Word32 -> [Bool]
+toBits :: (Eq a, Num a, Bits a) => Int -> a -> [Bool]
 toBits 0 _ = []
 toBits 1 v = [v .&. 1 /= 0]
 toBits s v = fmap (\b -> v .&. shift 1 b /= 0) [s - 1, s-2..0]
@@ -135,17 +148,18 @@ irWrite d b = do
   l2 <- ftdiWriteData d $ B.pack jtagTAP_END_SHIFT
   return $ l + l1 + l2
 
-virWrite::DeviceHandle -> [Bool] -> IO Int
-virWrite d b = do
-  l <- irWrite d $ toBits 10 0xE
+virWrite::DeviceHandle -> Word8 -> IO Int
+virWrite d addr = do
+  -- @todo addr < virAddrBase
+  l <- irWrite d $ toBits irAddrLen irAddrVir
   l1 <- ftdiWriteData d $ B.pack jtagTAP_SHIFT_DR
-  l2 <- jtagWriteBits d b
+  l2 <- jtagWriteBits d $ toBits virAddrLen $ virAddrBase + addr
   l3 <- ftdiWriteData d $ B.pack jtagTAP_END_SHIFT
   return $ l + l1 + l2 + l3
 
 vdrWrite::DeviceHandle -> [Bool] -> IO Int
 vdrWrite d b = do
-  l <- irWrite d $ toBits 10 0xC
+  l <- irWrite d $ toBits irAddrLen irAddrVdr
   l1 <- ftdiWriteData d $ B.pack jtagTAP_SHIFT_DR
   l2 <- jtagWriteBits d b
   l3 <- ftdiWriteData d $ B.pack jtagTAP_END_SHIFT
@@ -153,24 +167,27 @@ vdrWrite d b = do
 
 vdrWriteRead::DeviceHandle -> [Bool] -> IO (Int, [Bool])
 vdrWriteRead d b = do
-  l <- irWrite d $ toBits 10 0xC
+  l <- irWrite d $ toBits irAddrLen irAddrVdr
   l1 <- ftdiWriteData d $ B.pack jtagTAP_SHIFT_DR
   (l2, r) <- jtagWriteReadBits d b
   l3 <- ftdiWriteData d $ B.pack jtagTAP_END_SHIFT
   return (l + l1 + l2 + l3, r)
 
+virAddrWrite, virAddrRead, virAddrOff :: Word8
+virAddrWrite = 0x02
+virAddrRead  = 0x01
+virAddrOff   = 0x00
+
 outLed :: DeviceHandle -> Word32 -> IO Int
 outLed d v = do
-  l <- virWrite d $ toBits 5 0x12
-  --(l1, _) <- vdrWriteRead d $ toBits 7 v
+  l0 <- virWrite d virAddrWrite
   l1 <- vdrWrite d $ toBits 7 v
-  -- l2 <- virWrite d $ toBits 5 0x10
-  l3 <- virWrite d $ toBits 5 0x11
-  (l4, rd) <- vdrWriteRead d $ toBits 7 0
-  l5 <- virWrite d $ toBits 5 0x10
+  l3 <- virWrite d virAddrRead
+  (l4, rd) <- vdrWriteRead d $ toBits 7 (0 :: Word8)
+  l5 <- virWrite d virAddrOff
   print rd
   threadDelay 20000
-  return $ l + l1 + l3 + l4 + l5
+  return $ l0 + l1 + l3 + l4 + l5
 
 doStuff :: DeviceHandle -> IO ()
 doStuff d = do

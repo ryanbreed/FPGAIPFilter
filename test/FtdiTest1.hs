@@ -7,6 +7,8 @@ import           LibFtdi         (DeviceHandle, ftdiDeInit, ftdiInit,
                                   ftdiWriteData, ftdiReadData, withFtdi)
 import           Protolude
 
+-- FOR: DE0_Nano_project_JTAG.qar
+
 -- Derived from https://github.com/GeezerGeek/open_sld/blob/master/sld_interface.py,
 -- And: http://sourceforge.net/p/ixo-jtag/code/HEAD/tree/usb_jtag/
 
@@ -145,13 +147,13 @@ virWrite d b = do
 
 vdrWrite::DeviceHandle -> [Bool] -> IO Int
 vdrWrite d b = do
-  l <- irWrite d $ toBits 10 0xC1
+  l <- irWrite d $ toBits 10 0xC
   l1 <- ftdiWriteData d $ B.pack jtagTAP_SHIFT_DR
   l2 <- jtagWriteBits d b
   l3 <- ftdiWriteData d $ B.pack jtagTAP_END_SHIFT
   return $ l + l1 + l2 + l3
 
--- vdrWriteRead::DeviceHandle -> [Bool] -> IO (Int, [Bool])
+vdrWriteRead::DeviceHandle -> [Bool] -> IO (Int, [Bool])
 vdrWriteRead d b = do
   l <- irWrite d $ toBits 10 0xC
   l1 <- ftdiWriteData d $ B.pack jtagTAP_SHIFT_DR
