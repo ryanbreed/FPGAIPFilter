@@ -1,17 +1,14 @@
 {-# LANGUAGE FlexibleContexts #-}
 
-import qualified Data.Text       as T
-import           LibFtdi         (DeviceHandle, ftdiDeInit, ftdiInit,
-                                  ftdiUSBClose, ftdiUSBOpen, ftdiUSBReset,
-                                  withFtdi)
-import           JtagRW ( tapReset,
-                         virWrite, vdrWrite, vdrWriteRead,
-                         virAddrWrite, virAddrRead, virAddrOff,
-                         toBits,)
+import qualified Data.Text as T
+import           JtagRW    (tapReset, toBits, vdrWrite, vdrWriteRead,
+                            virAddrOff, virAddrRead, virAddrWrite, virWrite)
+import           LibFtdi   (DeviceHandle, ftdiDeInit, ftdiInit, ftdiUSBClose,
+                            ftdiUSBOpen, ftdiUSBReset, withFtdi)
 import           Protolude
 
 
--- FOR /home/jason/Develop/haskell/FPGAIPFilter_1/DE0_Nano_JTAG_RW.qar
+-- FOR ./FPGA_CODE/JTAG_RW
 
 outLed :: DeviceHandle -> Word32 -> IO Int
 outLed d v = do
