@@ -4,14 +4,14 @@ use ieee.numeric_std.all;
 
 entity de0_nano_system is
   port ( CLOCK_50      : in  std_logic;
-			
-			GPIO_0       : inout std_logic_vector(33 downto 0);
-			GPIO_1       : inout std_logic_vector(33 downto 0);
-			GPIO_2       : inout std_logic_vector(12 downto 0);
+         
+         GPIO_0       : inout std_logic_vector(33 downto 0);
+         GPIO_1       : inout std_logic_vector(33 downto 0);
+         GPIO_2       : inout std_logic_vector(12 downto 0);
         
-		   GPIO_0_IN    : in    std_logic_vector(1 downto 0);
-			GPIO_1_IN    : in    std_logic_vector(1 downto 0);
-			GPIO_2_IN    : in    std_logic_vector(2 downto 0);
+         GPIO_0_IN    : in    std_logic_vector(1 downto 0);
+         GPIO_1_IN    : in    std_logic_vector(1 downto 0);
+         GPIO_2_IN    : in    std_logic_vector(2 downto 0);
         
          -- SDRAM IS42S16160B (143MHz@CL-3) is used.
          DRAM_CLK     : out   std_logic;                       
@@ -35,15 +35,15 @@ entity de0_nano_system is
          KEY           : in    std_logic_vector(1 downto 0);
          SW            : in    std_logic_vector(3 downto 0);
         
-		   ADC_SDAT      : in    std_logic;
+         ADC_SDAT      : in    std_logic;
          ADC_SADDR     : out   std_logic; 
          ADC_SCLK      : out   std_logic; 
          ADC_CS_N      : out   std_logic;
 
-		   G_SENSOR_INT  : in    std_logic;
-			G_SENSOR_CS_N : out   std_logic;
-			
-			-- EEPROM
+         G_SENSOR_INT  : in    std_logic;
+         G_SENSOR_CS_N : out   std_logic;
+         
+         -- EEPROM
          I2C_SDAT      : in    std_logic; 
          I2C_SCLK      : out   std_logic          
 );
@@ -59,61 +59,63 @@ architecture syn of de0_nano_system is
           );
    end component pll_sys;
 
-	component counter_div is
-		generic ( OFFSET : INTEGER; BIT_WIDTH : INTEGER);
+   component counter_div is
+      generic ( OFFSET : INTEGER; BIT_WIDTH : INTEGER);
       port ( clk         : in  std_logic;
              counter_out : out std_logic_vector((BIT_WIDTH - 1) downto 0)
            );
    end component counter_div;
-	
    
-	component jtagtestrw is
-		port ( tdi                : out std_logic;                                       
-			 	 tdo                : in  std_logic                    := '0';             
-				 ir_in              : out std_logic_vector(1 downto 0);                   
-				 ir_out             : in  std_logic_vector(1 downto 0) := (others => '0'); 
-				 virtual_state_cdr  : out std_logic;                                       
-				 virtual_state_sdr  : out std_logic;                                       
-				 virtual_state_e1dr : out std_logic;                                       
-				 virtual_state_pdr  : out std_logic;                                       
-				 virtual_state_e2dr : out std_logic;                                       
-				 virtual_state_udr  : out std_logic;                                       
-				 virtual_state_cir  : out std_logic;                                       
-				 virtual_state_uir  : out std_logic;                                     
-				 tck                : out std_logic                                        
-				);
-	end component jtagtestrw;
-	
-	component jtagif2 is
-		port( tck         : in  std_logic;
-				tdi         : in  std_logic;
-				tdo         : out std_logic;
-				aclr        : in  std_logic;
-				sdr         : in  std_logic;
-				udr         : in  std_logic;
-				cdr         : in  std_logic;
-				ir_in       : in  std_logic_vector(1 downto 0);
-				ir_in_dec   : out std_logic_vector(6 downto 0);
-				ir_out_v    : in  std_logic_vector(6 downto 0);
-				ir_out_set  : in  std_logic;
-				ir_out_done : out std_logic;
-				ir_out      : out std_logic_vector(1 downto 0)
-			 );
-	end component jtagif2;
-	
+   
+   component jtagtestrw is
+      port ( tdi                : out std_logic;                                       
+             tdo                : in  std_logic                    := '0';             
+             ir_in              : out std_logic_vector(1 downto 0);                   
+             ir_out             : in  std_logic_vector(1 downto 0) := (others => '0'); 
+             virtual_state_cdr  : out std_logic;                                       
+             virtual_state_sdr  : out std_logic;                                       
+             virtual_state_e1dr : out std_logic;                                       
+             virtual_state_pdr  : out std_logic;                                       
+             virtual_state_e2dr : out std_logic;                                       
+             virtual_state_udr  : out std_logic;                                       
+             virtual_state_cir  : out std_logic;                                       
+             virtual_state_uir  : out std_logic;                                     
+             tck                : out std_logic                                        
+            );
+   end component jtagtestrw;
+   
+   component jtagif2 is
+         generic ( DR_BITS : INTEGER  ) ;
+         port( tck         : in  std_logic;
+               tdi         : in  std_logic;
+               tdo         : out std_logic;
+               aclr        : in  std_logic;
+               sdr         : in  std_logic;
+               udr         : in  std_logic;
+               cdr         : in  std_logic;
+               ir_in       : in  std_logic_vector(1 downto 0);
+               vdr_out     : out std_logic_vector(DR_BITS - 1  downto 0);
+               vdr_out_rdy : out std_logic;
+               vdr_in      : in  std_logic_vector(DR_BITS - 1 downto 0);
+               vdr_in_set  : in  std_logic;
+               vdr_in_rdy  : out std_logic;
+               ir_out      : out std_logic_vector(1 downto 0)
+             );
+   end component jtagif2;
+   
    signal clk_10     : std_logic;
    signal pll_locked : std_logic;
-	
-	signal tdi   : std_logic;
-	signal tdo   : std_logic;
-	signal tck   : std_logic;
-	signal ir_in : std_logic_vector(1 downto 0);
-	signal sdr   : std_logic;
-	signal udr   : std_logic;
-	signal cdr   : std_logic;
-	
-	signal test_out_data : std_logic_vector(6 downto 0);
-	
+   
+   signal tdi   : std_logic;
+   signal tdo   : std_logic;
+   signal tck   : std_logic;
+   signal ir_in : std_logic_vector(1 downto 0);
+   signal sdr   : std_logic;
+   signal udr   : std_logic;
+   signal cdr   : std_logic;
+   
+   signal test_out_data : std_logic_vector(6 downto 0);
+   
 begin
 
    inst_pll_sys : pll_sys
@@ -124,43 +126,46 @@ begin
                );
                                   
    inst_heartbeat : counter_div 
-		generic map ( OFFSET => 21, BIT_WIDTH => 1)
+      generic map ( OFFSET => 21, BIT_WIDTH => 1)
       port map ( clk         => clk_10,
                  counter_out => LED(0 downto 0)
                );
-	
+   
    -- IR WIDTH must be 2
    inst_jtagtest : jtagtestrw
       port map ( tdi => tdi,
-					  tdo => tdo,
-					  ir_in => ir_in,
-					  virtual_state_sdr => sdr,
-					  virtual_state_udr => udr,
-					  virtual_state_cdr => cdr,
+                 tdo => tdo,
+                 ir_in => ir_in,
+                 virtual_state_sdr => sdr,
+                 virtual_state_udr => udr,
+                 virtual_state_cdr => cdr,
                  tck => tck
                );
-	
+   
    inst_test_out : counter_div
-		generic map ( OFFSET => 0, BIT_WIDTH => 7)
-		port map ( clk         => sdr,
+      generic map ( OFFSET => 0, BIT_WIDTH => 7)
+      port map ( clk         => sdr,
                  counter_out => test_out_data
-               ); 	
-					
-	inst_jtag_if : jtagif2 
-		port map ( 
-				  tck => tck,
-				  tdi => tdi,
-				  tdo => tdo,
-				  sdr => sdr,
-				  udr => udr,
-				  cdr => cdr,
-				  ir_in => ir_in,
-				  ir_in_dec => LED(7 downto 1),
-				  aclr => '0',
-				  ir_out_v => test_out_data,
-				  ir_out_set => '1'
-				); 
-									
+               );    
+               
+   inst_jtag_if : jtagif2 
+      generic map (DR_BITS => 7)
+      port map ( 
+              aclr => '0',
+              tck => tck,
+              tdi => tdi,
+              tdo => tdo,
+              sdr => sdr,
+              udr => udr,
+              cdr => cdr,
+              ir_in => ir_in,
+              vdr_out => LED(7 downto 1),
+              -- vdr_out_rdy
+              vdr_in => test_out_data,
+              vdr_in_set => '1'
+              --vdr_in_rdy
+            ); 
+                           
 end architecture syn;
 
 -- *** EOF ***
