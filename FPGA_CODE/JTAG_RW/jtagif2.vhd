@@ -14,8 +14,8 @@ entity jtagif2 is
          vdr_out     : out std_logic_vector(DR_BITS - 1 downto 0);
          vdr_out_rdy : out std_logic;
          vdr_in      : in  std_logic_vector(DR_BITS - 1 downto 0);
-         vdr_in_set  : in  std_logic;
          vdr_in_rdy  : out std_logic;
+         vdr_clk     : in  std_logic;
          ir_out      : out std_logic_vector(1 downto 0)
        );
 end entity jtagif2;
@@ -29,6 +29,8 @@ architecture rtl of jtagif2 is
 
    signal read_in       : std_logic_vector(TOP_BIT downto 0);
    signal write_out     : std_logic_vector(TOP_BIT downto 0);
+   signal vdr_out_rdy_1 : std_logic;
+   signal vdr_out_rdy_2 : std_logic;
    
    
 begin
@@ -47,6 +49,36 @@ begin
             elsif sdr = '1' then
                write_out <= tdi & write_out(TOP_BIT downto 1);
             end if;
+         end if;
+      end if;
+   end process;
+   
+   process(vdr_clk)
+   begin
+      if rising_edge(vdr_clk) then
+         if ir_in = WRITEV and udr = '1' then
+            vdr_out_rdy_2 <= '1';
+         else 
+            vdr_out_rdy_2 <= '0';
+         end if;
+      end if;
+   end process;
+   
+   process(vdr_clk)
+   begin
+      if rising_edge(vdr_clk) then
+         vdr_out_rdy_1 <= vdr_out_rdy_2;
+         vdr_out_rdy   <= vdr_out_rdy_2 and not vdr_out_rdy_1;
+      end if;
+   end process;
+   
+   process(vdr_clk)
+   begin
+      if rising_edge(vdr_clk) then
+         if ir_in = READV and cdr = '1' then
+            vdr_in_rdy <= '1';
+         else 
+            vdr_in_rdy <= '0';
          end if;
       end if;
    end process;

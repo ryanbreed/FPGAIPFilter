@@ -94,11 +94,11 @@ architecture syn of de0_nano_system is
                udr         : in  std_logic;
                cdr         : in  std_logic;
                ir_in       : in  std_logic_vector(1 downto 0);
-               vdr_out     : out std_logic_vector(DR_BITS - 1  downto 0);
+               vdr_out     : out std_logic_vector(DR_BITS - 1 downto 0);
                vdr_out_rdy : out std_logic;
                vdr_in      : in  std_logic_vector(DR_BITS - 1 downto 0);
-               vdr_in_set  : in  std_logic;
                vdr_in_rdy  : out std_logic;
+               vdr_clk     : in  std_logic;
                ir_out      : out std_logic_vector(1 downto 0)
              );
    end component jtagif2;
@@ -162,8 +162,8 @@ begin
               vdr_out => LED(7 downto 1),
               -- vdr_out_rdy
               vdr_in => test_out_data,
-              vdr_in_set => '1'
-              --vdr_in_rdy
+              -- vdr_in_rdy
+              vdr_clk => tck
             ); 
                            
 end architecture syn;
