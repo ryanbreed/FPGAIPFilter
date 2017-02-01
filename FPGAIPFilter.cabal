@@ -16,10 +16,13 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      src
   ghc-options:         -Wall
-  exposed-modules:     Lib
-  other-modules:       Lib.Prelude
+  exposed-modules:     JtagRW
+  other-modules:       Lib.Prelude, Lib.JtagRW
   build-depends:       base
                      , protolude >= 0.1.6 && < 0.2
+                     , text
+                     , bytestring
+                     , bindings-libftdi
   default-language:    Haskell2010
   default-extensions:  OverloadedStrings, NoImplicitPrelude
 

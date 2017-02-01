@@ -1,7 +1,7 @@
 module Main where
 
 import Protolude
-import Lib
+import JtagRW
 
 main :: IO ()
-main = someFunc
+main = print "Hello world"
