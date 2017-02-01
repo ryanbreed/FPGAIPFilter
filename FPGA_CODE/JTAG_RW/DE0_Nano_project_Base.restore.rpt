@@ -1,0 +1,94 @@
+Restore Archived Project report for DE0_Nano_project_Base
+Wed Feb  1 12:12:35 2017
+Quartus Prime Version 16.1.1 Build 200 11/30/2016 SJ Lite Edition
+
+
+---------------------
+; Table of Contents ;
+---------------------
+  1. Legal Notice
+  2. Restore Archived Project Summary
+  3. Restore Archived Project Messages
+  4. Files Restored
+  5. Files Not Restored
+
+
+
+----------------
+; Legal Notice ;
+----------------
+Copyright (C) 2016  Intel Corporation. All rights reserved.
+Your use of Intel Corporation's design tools, logic functions 
+and other software and tools, and its AMPP partner logic 
+functions, and any output files from any of the foregoing 
+(including device programming or simulation files), and any 
+associated documentation or information are expressly subject 
+to the terms and conditions of the Intel Program License 
+Subscription Agreement, the Intel Quartus Prime License Agreement,
+the Intel MegaCore Function License Agreement, or other 
+applicable license agreement, including, without limitation, 
+that your use is for the sole purpose of programming logic 
+devices manufactured by Intel and sold by Intel or its 
+authorized distributors.  Please refer to the applicable 
+agreement for further details.
+
+
+
++-------------------------------------------------------------------------+
+; Restore Archived Project Summary                                        ;
++---------------------------------+---------------------------------------+
+; Restore Archived Project Status ; Successful - Wed Feb  1 12:12:35 2017 ;
+; Revision Name                   ; DE0_Nano_project_Base                 ;
+; Top-level Entity Name           ; de0_nano_system                       ;
+; Family                          ; Cyclone IV E                          ;
++---------------------------------+---------------------------------------+
+
+
++-----------------------------------+
+; Restore Archived Project Messages ;
++-----------------------------------+
+Info: Successfully restored '/home/jason/Develop/haskell/FPGAIPFilter_1/FPGA_CODE/JTAG_RW/../DE0_Nano_JTAG_RW.qar'
+Info: Generated report 'DE0_Nano_project_Base.restore.rpt'
+Info (23030): Evaluation of Tcl script /opt/intelFPGA_lite/16.1/quartus/common/tcl/apps/qpm/qar.tcl was successful
+Info: Quartus Prime Shell was successful. 0 errors, 0 warnings
+    Info: Peak virtual memory: 1047 megabytes
+    Info: Processing ended: Wed Feb  1 12:12:35 2017
+    Info: Elapsed time: 00:00:00
+    Info: Total CPU time (on all processors): 00:00:01
+
+
++-----------------------------------------------+
+; Files Restored                                ;
++-----------------------------------------------+
+; File Name                                     ;
++-----------------------------------------------+
+; qar_info.json                                 ;
+; DE0_Nano.sdc                                  ;
+; DE0_Nano_project_Base.qpf                     ;
+; DE0_Nano_project_Base.qsf                     ;
+; DE0_Nano_project_Base_assignment_defaults.qdf ;
+; Top.vhd                                       ;
+; counter_div.vhd                               ;
+; db/stp1_auto_stripped.stp                     ;
+; heartbeat.vhd                                 ;
+; jtagif2.vhd                                   ;
+; jtagtestrw.qsys                               ;
+; jtagtestrw.sopcinfo                           ;
+; jtagtestrw/jtagtestrw.cmp                     ;
+; jtagtestrw/synthesis/jtagtestrw.debuginfo     ;
+; jtagtestrw/synthesis/jtagtestrw.qip           ;
+; jtagtestrw/synthesis/jtagtestrw.vhd           ;
+; pll_sys.qip                                   ;
+; pll_sys.vhd                                   ;
+; stp1.stp                                      ;
+; test_out.vhd                                  ;
++-----------------------------------------------+
+
+
++--------------------+
+; Files Not Restored ;
++--------------------+
+; File Name          ;
++--------------------+
+
+

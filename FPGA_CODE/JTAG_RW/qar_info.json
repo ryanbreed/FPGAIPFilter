@@ -1,0 +1,7 @@
+{
+	"common_dir" : "/home/jason/Develop/haskell/FPGAIPFilter_1/DE0_Nano_project_JTAG1/",
+	"acds_version" : "Version 16.1.1",
+	"platform" : "linux",
+	"os" : "Ubuntu 16.04.1",
+	"qpf" : "DE0_Nano_project_Base.qpf"
+}
