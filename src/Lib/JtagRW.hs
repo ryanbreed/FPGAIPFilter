@@ -6,8 +6,11 @@ module Lib.JtagRW
 ) where
 
 import qualified Data.ByteString as B
-import           LibFtdi         (ftdiWriteData, ftdiReadData, DeviceHandle)
+import           LibFtdi         (DeviceHandle, ftdiReadData, ftdiWriteData)
 import           Protolude
+
+-- Derived from https://github.com/GeezerGeek/open_sld/blob/master/sld_interface.py,
+-- And: http://sourceforge.net/p/ixo-jtag/code/HEAD/tree/usb_jtag/
 
 jtagTCK, jtagTMS, jtagTDI, jtagLED, jtagRD :: Word8
 --jtagOFF = 0x00
@@ -119,11 +122,32 @@ jtagWriteBits d bits = ftdiWriteData d $ B.pack $
 lsbToBool :: [Word8] -> [Bool]
 lsbToBool b = fmap (\v -> v .&. 1 /= 0) b
 
+-- @todo cleanup
+ftdiReadWithTimeout :: DeviceHandle -> B.ByteString -> Int -> Int -> Int ->
+                      IO (Maybe B.ByteString)
+ftdiReadWithTimeout d acc left iter delay =
+   if iter == 0
+      then pure Nothing
+      else do
+        rd <- ftdiReadData d left
+        case rd of
+          Nothing -> do
+            threadDelay delay
+            ftdiReadWithTimeout d acc left (iter - 1) delay
+          Just r ->
+            let newacc = acc `B.append` r
+                newleft = left - B.length r in
+                  if newleft == 0
+                    then pure $ Just newacc
+                    else do
+                      threadDelay delay
+                      ftdiReadWithTimeout d newacc newleft (iter - 1) delay
+
 jtagWriteReadBits::DeviceHandle -> [Bool] -> IO (Int, [Bool])
 jtagWriteReadBits d bits = do
   sz <- ftdiWriteData d $ B.pack $
           mkBytesJtag (revSplitMsb bits) jtagM0D0R jtagM0D1R jtagM1D0R jtagM1D1R
-  rd <- ftdiReadData d (length bits)
+  rd <- ftdiReadWithTimeout d "" (length bits) 5 1000 -- @todo parameters
   case rd of
     Just r -> return (sz, lsbToBool $ B.unpack r)
     _ -> return (sz, [])
