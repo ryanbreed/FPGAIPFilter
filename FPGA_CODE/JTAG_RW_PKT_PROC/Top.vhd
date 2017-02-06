@@ -65,6 +65,13 @@ architecture syn of de0_nano_system is
              counter_out : out std_logic_vector((BIT_WIDTH - 1) downto 0)
            );
    end component counter_div;
+	
+	component counter_hold is
+		generic ( HOLD_FOR : INTEGER) ;
+		port( clk         : in  std_logic;
+				hold_out : out std_logic
+			 );
+	end component counter_hold;
    
    
    component jtagtestrw is
@@ -108,7 +115,7 @@ architecture syn of de0_nano_system is
 			 -- clock
 			 system1000      : in std_logic;
 			 -- asynchronous reset: active low
-			 system1000_rstn : in std_logic;
+			 system1000_rstn : in  std_logic;
 			 output_0_0      : out unsigned(7 downto 0);
 			 output_0_1      : out boolean;
 			 output_0_2      : out boolean);
@@ -124,10 +131,11 @@ architecture syn of de0_nano_system is
    signal sdr   : std_logic;
    signal udr   : std_logic;
    signal cdr   : std_logic;
-   
-   signal test_out_data : std_logic_vector(11 downto 0);
 	
 	signal vdr_out : std_logic_vector(11 downto 0);
+	signal vdr_in  : std_logic_vector(11 downto 0);
+	
+	signal pp_reset : std_logic;
 	
 	function to_stdulogic( V: Boolean ) return std_ulogic is 
 	begin 
@@ -152,6 +160,7 @@ begin
       port map ( clk         => clk_10,
                  counter_out => LED(0 downto 0)
                );
+	
    
    -- IR WIDTH must be 2
    inst_jtagtest : jtagtestrw
@@ -163,12 +172,6 @@ begin
                  virtual_state_cdr => cdr,
                  tck => tck
                );
-   
-   inst_test_out : counter_div
-      generic map ( OFFSET => 0, BIT_WIDTH => 7)
-      port map ( clk         => cdr
-                 -- counter_out => test_out_data
-               );    
                
    inst_jtag_if : jtagif2 
       generic map (DR_BITS => 12)
@@ -183,21 +186,30 @@ begin
               ir_in => ir_in,
               vdr_out => vdr_out,
               -- vdr_out_rdy
-              vdr_in => test_out_data,
+              vdr_in => vdr_in,
               -- vdr_in_rdy
               vdr_clk => clk_10
             ); 
+				
+	inst_pp_reset : counter_hold 
+      generic map ( HOLD_FOR => 4)
+      port map ( clk         => tck,
+                 hold_out => pp_reset
+               );
 
 	inst_pkt_proc : packetprocessor_topentity
 	  port map (input_0  => vdr_out,
 			 -- clock
 			 system1000 => tck,
 			 -- asynchronous reset: active low
-			 system1000_rstn => '1',
-			 std_logic_vector(output_0_0)  => test_out_data(11 downto 4),
-			 to_stdulogic(output_0_1)  => test_out_data(3),
-			 to_stdulogic(output_0_2)  => test_out_data(2)
+			 system1000_rstn => pp_reset,
+			 std_logic_vector(output_0_0)  => vdr_in(11 downto 4),
+			 to_stdulogic(output_0_1)  => vdr_in(3),
+			 to_stdulogic(output_0_2)  => vdr_in(2)
 	  );
+	  
+	  LED(7 downto 1) <= vdr_in(10 downto 4);
+	  vdr_in(1 downto 0) <= "00";
                            
 end architecture syn;
 

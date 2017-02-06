@@ -8,6 +8,10 @@ package packetprocessor_types is
     tup3_sel1 : boolean;
     tup3_sel2 : boolean;
   end record;
+  type tup2_0 is record
+    tup2_0_sel0 : boolean;
+    tup2_0_sel1 : unsigned(7 downto 0);
+  end record;
   type tup3_0 is record
     tup3_0_sel0 : unsigned(10 downto 0);
     tup3_0_sel1 : boolean;
@@ -26,6 +30,7 @@ package packetprocessor_types is
   function tagToEnum (s : in signed) return boolean;
   function dataToTag (b : in boolean) return signed;
   function toSLV (p : packetprocessor_types.tup3) return std_logic_vector;
+  function toSLV (p : packetprocessor_types.tup2_0) return std_logic_vector;
   function toSLV (p : packetprocessor_types.tup3_0) return std_logic_vector;
   function toSLV (value :  packetprocessor_types.array_of_unsigned_8) return std_logic_vector;
   function toSLV (p : packetprocessor_types.tup2) return std_logic_vector;
@@ -79,6 +84,10 @@ package body packetprocessor_types is
   function toSLV (p : packetprocessor_types.tup3) return std_logic_vector is
   begin
     return (toSLV(p.tup3_sel0) & toSLV(p.tup3_sel1) & toSLV(p.tup3_sel2));
+  end;
+  function toSLV (p : packetprocessor_types.tup2_0) return std_logic_vector is
+  begin
+    return (toSLV(p.tup2_0_sel0) & toSLV(p.tup2_0_sel1));
   end;
   function toSLV (p : packetprocessor_types.tup3_0) return std_logic_vector is
   begin

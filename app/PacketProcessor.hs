@@ -5,7 +5,6 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE DeriveLift #-}
 
 module PacketProcessor (packetProcessor, MemOp(..), DataV, MemAddr, topEntity) where
 
@@ -14,7 +13,7 @@ import CLaSH.Prelude
 type DataV = Unsigned 8
 type MemAddr = Unsigned 11
 
-data MemOp = READ MemAddr | WRITE DataV deriving Lift;
+data MemOp = READ MemAddr | WRITE DataV;
 
 packetProcessor::
     Signal MemOp -- ^ Memory operation
@@ -25,21 +24,27 @@ packetProcessor::
 packetProcessor memOp =
     (ramOut, done, err)
   where
-    ramOut = blockRamPow2 (replicate (SNat :: SNat 2048) (0::DataV)) rAddr wrOp
+    ramOut :: Signal DataV
+    ramOut = readNew (blockRamPow2 (replicate (SNat :: SNat 2048) (0::DataV))) rAddr wrOp
 
     (rAddr, wrEn, wrOp) = unbundle $ getOp <$> memOp <*> wrAddr
+
     getOp::MemOp -> MemAddr -> (MemAddr, Bool, Maybe (MemAddr, DataV))
     getOp m wr = case m of
       READ a -> (a, False, Nothing)
-      WRITE x -> (0, True, Just (wr, x))
+      WRITE x -> (0::MemAddr, True, Just (wr, x))
 
     -- @todo reset for reuse
-    wrAddr = register 0 $ mux wrEn (clampedInc <$> wrAddr) wrAddr
+    wrAddr :: Signal MemAddr
+    wrAddr = register (0::MemAddr) $ mux wrEn (clampedInc <$> wrAddr) wrAddr
 
     -- @todo packet count, valid fields etc
+    done::Signal Bool
     done = wrAddr .==. 2047
+    err::Signal Bool
     err = wrAddr .==. 2047
 
+    clampedInc::MemAddr -> MemAddr
     clampedInc val
         | val == 2047 = 2047
         | otherwise   = val + 1

@@ -19,4 +19,4 @@ testInput = stimuliGenerator $(listToVecTH
   ])
 
 main :: IO ()
-main = print $ drop 1 (sampleN 9 (topEntity testInput))
+main = printX $ sampleN 9 $ topEntity testInput
