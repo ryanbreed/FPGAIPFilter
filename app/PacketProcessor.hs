@@ -51,26 +51,27 @@ topEntity::Signal MemOp -- ^ Memory operation
      )
 topEntity i = bundle (packetProcessor i)
 
--- testInput :: Signal MemOp
--- testInput = stimuliGenerator $(listToVecTH
---   [ WRITE 101
---   , WRITE 102
---   , WRITE 103
---   , WRITE 104
---   , READ 0
---   , READ 1
---   , READ 2
---   , READ 3
---   ])
---
--- expectedOutput :: Signal (DataV, Bool, Bool) -> Signal Bool
--- expectedOutput = outputVerifier $(listToVecTH
---   [ (0, False, False)
---   , (101, False, False)
---   , (101, False, False)
---   , (101, False, False)
---   , (101, False, False)
---   , (102, False, False)
---   , (103, False, False)
---   , (104, False, False)
---   ])
+testInput :: Signal MemOp
+testInput = stimuliGenerator
+  (  WRITE 100
+  :> WRITE 101
+  :> WRITE 102
+  :> WRITE 103
+  :> READ 0
+  :> READ 1
+  :> READ 2
+  :> READ 3
+  :> Nil )
+
+expectedOutput :: Signal (DataV, Bool, Bool) -> Signal Bool
+expectedOutput = outputVerifier
+  (  (0, False, False)
+  :> (100, False, False)
+  :> (100, False, False)
+  :> (100, False, False)
+  :> (100, False, False)
+  :> (100, False, False)
+  :> (101, False, False)
+  :> (102, False, False)
+  :> (103, False, False)
+  :> Nil)
