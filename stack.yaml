@@ -15,7 +15,7 @@
 # resolver:
 #  name: custom-snapshot
 #  location: "./custom-snapshot.yaml"
-resolver: lts-6.27
+resolver: nightly-2017-02-02
 
 # User packages to be built.
 # Various formats can be used as shown in the example below.
@@ -39,7 +39,7 @@ packages:
 - '.'
 - location:
     git: https://github.com/tau-tao/bindings-libftdi.git
-    commit: fbd69d968ca0a9eff9f8778e59bdf81f7c3b11fb
+    commit: aedbb390d824ac3f326068caa9d23c7bfff4f126
   extra-dep: true
 
 # Dependency packages to be pulled from upstream that are not in the resolver
@@ -49,7 +49,7 @@ extra-deps:
     - haskell98-1.0.1.1
     - tfp-0.3
     - vhdl-0.1.2.1
-    - clash-ghc-0.6.24
+    - clash-ghc-0.7.0.1
     - text-1.2.2.1
 
 # Override default flag values for local packages and extra-deps

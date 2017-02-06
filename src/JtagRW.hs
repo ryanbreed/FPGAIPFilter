@@ -10,7 +10,7 @@ module JtagRW
     (
       tapReset,
       virAddrWrite, virAddrRead, virAddrOff,
-      virWrite, vdrWrite, vdrWriteRead, toBits
+      virWrite, vdrWrite, vdrWriteRead, toBits, fromBits
     ) where
 
 import Lib.Prelude

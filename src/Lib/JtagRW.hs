@@ -2,7 +2,8 @@ module Lib.JtagRW
 (
   tapReset,
   virAddrWrite, virAddrRead, virAddrOff,
-  virWrite, vdrWrite, vdrWriteRead, toBits
+  virWrite, vdrWrite, vdrWriteRead,
+  toBits, fromBits,
 ) where
 
 import qualified Data.ByteString as B
@@ -149,8 +150,8 @@ jtagWriteReadBits d bits = do
           mkBytesJtag (revSplitMsb bits) jtagM0D0R jtagM0D1R jtagM1D0R jtagM1D1R
   rd <- ftdiReadWithTimeout d "" (length bits) 5 1000 -- @todo parameters
   case rd of
-    Just r -> return (sz, lsbToBool $ B.unpack r)
-    _ -> return (sz, [])
+    Just r -> pure (sz, lsbToBool $ B.unpack r)
+    _ -> pure (sz, [])
 
 tapReset::DeviceHandle -> IO Int
 tapReset d = ftdiWriteData d $ B.pack $ tapResetSeq ++ tapIdleSeq
@@ -160,12 +161,20 @@ toBits 0 _ = []
 toBits 1 v = [v .&. 1 /= 0]
 toBits s v = fmap (\b -> v .&. shift 1 b /= 0) [s - 1, s-2..0]
 
+pwr2::[Int]
+pwr2 = 1 : fmap (2*) pwr2
+
+fromBits::[Bool] -> Int
+fromBits [] = 0
+fromBits x = foldr addPwr 0 $ zip x pwr2
+  where addPwr (b,n) a = if b then a + n else a
+
 irWrite::DeviceHandle -> [Bool] -> IO Int
 irWrite d b = do
   l <- ftdiWriteData d $ B.pack tapShiftVIRSeq
   l1 <- jtagWriteBits d b
   l2 <- ftdiWriteData d $ B.pack tapEndSeq
-  return $ l + l1 + l2
+  pure $ l + l1 + l2
 
 virWrite::DeviceHandle -> Word8 -> IO Int
 virWrite d addr = do
@@ -174,7 +183,7 @@ virWrite d addr = do
   l1 <- ftdiWriteData d $ B.pack tapShiftVDRSeq
   l2 <- jtagWriteBits d $ toBits virAddrLen $ virAddrBase + addr
   l3 <- ftdiWriteData d $ B.pack tapEndSeq
-  return $ l + l1 + l2 + l3
+  pure $ l + l1 + l2 + l3
 
 vdrWrite::DeviceHandle -> [Bool] -> IO Int
 vdrWrite d b = do
@@ -182,7 +191,7 @@ vdrWrite d b = do
   l1 <- ftdiWriteData d $ B.pack tapShiftVDRSeq
   l2 <- jtagWriteBits d b
   l3 <- ftdiWriteData d $ B.pack tapEndSeq
-  return $ l + l1 + l2 + l3
+  pure $ l + l1 + l2 + l3
 
 vdrWriteRead::DeviceHandle -> [Bool] -> IO (Int, [Bool])
 vdrWriteRead d b = do
@@ -190,7 +199,7 @@ vdrWriteRead d b = do
   l1 <- ftdiWriteData d $ B.pack tapShiftVDRSeq
   (l2, r) <- jtagWriteReadBits d b
   l3 <- ftdiWriteData d $ B.pack tapEndSeq
-  return (l + l1 + l2 + l3, r)
+  pure (l + l1 + l2 + l3, r)
 
 virAddrWrite, virAddrRead, virAddrOff :: Word8
 virAddrWrite = 0x02

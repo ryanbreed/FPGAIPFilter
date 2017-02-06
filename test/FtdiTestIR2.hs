@@ -1,7 +1,7 @@
 {-# LANGUAGE FlexibleContexts #-}
 
 import qualified Data.Text as T
-import           JtagRW    (tapReset, toBits, vdrWrite, vdrWriteRead,
+import           JtagRW    (tapReset, toBits, fromBits, vdrWrite, vdrWriteRead,
                             virAddrOff, virAddrRead, virAddrWrite, virWrite)
 import           LibFtdi   (DeviceHandle, ftdiDeInit, ftdiInit, ftdiUSBClose,
                             ftdiUSBOpen, ftdiUSBReset, withFtdi)
@@ -17,8 +17,8 @@ outLed d v = do
   l3 <- virWrite d virAddrRead
   (l4, rd) <- vdrWriteRead d $ toBits 7 (0 :: Word8)
   l5 <- virWrite d virAddrOff
-  print rd
-  threadDelay 20000
+  print $ fromBits rd
+  -- threadDelay 20000
   return $ l0 + l1 + l3 + l4 + l5
 
 doStuff :: DeviceHandle -> IO ()
