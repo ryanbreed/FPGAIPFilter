@@ -15,7 +15,7 @@ architecture structural of packetprocessor_testbench is
   signal finished        : boolean;
   signal system1000      : std_logic;
   signal system1000_rstn : std_logic;
-  signal i               : std_logic_vector(11 downto 0);
+  signal i               : packetprocessor_types.tup2;
   signal case_alt        : packetprocessor_types.tup3;
 begin
   done <= finished;
@@ -47,7 +47,7 @@ begin
       ,i               => i
       ,case_alt        => case_alt);
   
-  i <= std_logic_vector'(0 to 11 => 'X');
+  i <= packetprocessor_types.tup2'(std_logic_vector'(0 to 11 => 'X'),true);
   
   finished <=
   -- pragma translate_off

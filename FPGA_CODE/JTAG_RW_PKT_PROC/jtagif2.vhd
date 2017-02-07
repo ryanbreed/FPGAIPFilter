@@ -15,7 +15,6 @@ entity jtagif2 is
          vdr_out_rdy : out std_logic;
          vdr_in      : in  std_logic_vector(DR_BITS - 1 downto 0);
          vdr_in_rdy  : out std_logic;
-         vdr_clk     : in  std_logic;
          ir_out      : out std_logic_vector(1 downto 0)
        );
 end entity jtagif2;
@@ -53,9 +52,9 @@ begin
       end if;
    end process;
    
-   process(vdr_clk)
+   process(tck)
    begin
-      if rising_edge(vdr_clk) then
+      if rising_edge(tck) then
          if ir_in = WRITEV and udr = '1' then
             vdr_out_rdy_2 <= '1';
          else 
@@ -64,17 +63,17 @@ begin
       end if;
    end process;
    
-   process(vdr_clk)
+   process(tck)
    begin
-      if rising_edge(vdr_clk) then
+      if rising_edge(tck) then
          vdr_out_rdy_1 <= vdr_out_rdy_2;
          vdr_out_rdy   <= vdr_out_rdy_2 and not vdr_out_rdy_1;
       end if;
    end process;
    
-   process(vdr_clk)
+   process(tck)
    begin
-      if rising_edge(vdr_clk) then
+      if rising_edge(tck) then
          if ir_in = READV and cdr = '1' then
             vdr_in_rdy <= '1';
          else 

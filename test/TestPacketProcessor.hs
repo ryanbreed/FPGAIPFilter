@@ -6,16 +6,17 @@ import Protolude
 import CLaSH.Prelude hiding (drop, print)
 import PacketProcessor
 
-testInput :: Signal MemOp
+testInput :: Signal (MemOp, Bool)
 testInput = stimuliGenerator $(listToVecTH
-  [ WRITE 100
-  , READ 0
-  , WRITE 101
-  , WRITE 102
-  , WRITE 103
-  , READ 3
-  , READ 2
-  , READ 1
+  [ (WRITE 100, True)
+  , (WRITE 101, True)
+  , (WRITE 102, True)
+  , (WRITE 103, True)
+  , (WRITE 104, False)
+  , (READ 0, True)
+  , (READ 1, True)
+  , (READ 2, True)
+  , (READ 3, True)
   ])
 
 main :: IO ()

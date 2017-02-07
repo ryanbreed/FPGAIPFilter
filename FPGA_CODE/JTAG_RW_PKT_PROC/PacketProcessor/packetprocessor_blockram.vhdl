@@ -20,7 +20,7 @@ architecture structural of packetprocessor_blockram is
   signal wild2_app_arg : signed(63 downto 0);
   signal y             : unsigned(7 downto 0);
   signal wild2         : signed(63 downto 0);
-  signal x1            : packetprocessor_types.tup2;
+  signal x1            : packetprocessor_types.tup2_0;
   signal result_0      : signed(63 downto 0);
   signal wild_app_arg  : signed(63 downto 0);
   signal case_alt      : unsigned(7 downto 0);
@@ -63,16 +63,16 @@ begin
   end block;
   -- blockRam end
   
-  x2 <= x1.tup2_sel0;
+  x2 <= x1.tup2_0_sel0;
   
   wild2_app_arg <= signed(std_logic_vector(resize(x2,64)));
   
-  y <= x1.tup2_sel1;
+  y <= x1.tup2_0_sel1;
   
   wild2 <= wild2_app_arg;
   
-  x1 <= (tup2_sel0 => unsigned(wrm(18 downto 8))
-        ,tup2_sel1 => unsigned(wrm(7 downto 0)));
+  x1 <= (tup2_0_sel0 => unsigned(wrm(18 downto 8))
+        ,tup2_0_sel1 => unsigned(wrm(7 downto 0)));
   
   result_0 <= wild2;
   

@@ -105,18 +105,18 @@ architecture syn of de0_nano_system is
                vdr_out_rdy : out std_logic;
                vdr_in      : in  std_logic_vector(DR_BITS - 1 downto 0);
                vdr_in_rdy  : out std_logic;
-               vdr_clk     : in  std_logic;
                ir_out      : out std_logic_vector(1 downto 0)
              );
    end component jtagif2;
 	
 	component packetprocessor_topentity is
-	  port(input_0         : in std_logic_vector(11 downto 0);
+	  port(input_0_0       : in std_logic_vector(11 downto 0);
+			 input_0_1       : in boolean;
 			 -- clock
 			 system1000      : in std_logic;
 			 -- asynchronous reset: active low
-			 system1000_rstn : in  std_logic;
-			 output_0_0      : out unsigned(7 downto 0);
+			 system1000_rstn : in std_logic;
+			 output_0_0      : out std_logic_vector(8 downto 0);
 			 output_0_1      : out boolean;
 			 output_0_2      : out boolean);
 	end component packetprocessor_topentity;
@@ -133,7 +133,9 @@ architecture syn of de0_nano_system is
    signal cdr   : std_logic;
 	
 	signal vdr_out : std_logic_vector(11 downto 0);
+	signal vdr_out_rdy : std_logic;
 	signal vdr_in  : std_logic_vector(11 downto 0);
+	
 	
 	signal pp_reset : std_logic;
 	
@@ -145,6 +147,15 @@ architecture syn of de0_nano_system is
 			  return '0'; 
 		 end if;
 	end to_stdulogic;
+	
+	function to_Boolean( V: std_ulogic ) return Boolean is 
+	begin 
+		 if V = '1' then 
+			  return True; 
+		 else 
+			  return False; 
+		 end if;
+	end to_Boolean;
    
 begin
 
@@ -185,10 +196,9 @@ begin
               cdr => cdr,
               ir_in => ir_in,
               vdr_out => vdr_out,
-              -- vdr_out_rdy
-              vdr_in => vdr_in,
+              vdr_out_rdy => vdr_out_rdy,
+              vdr_in => vdr_in
               -- vdr_in_rdy
-              vdr_clk => clk_10
             ); 
 				
 	inst_pp_reset : counter_hold 
@@ -198,18 +208,21 @@ begin
                );
 
 	inst_pkt_proc : packetprocessor_topentity
-	  port map (input_0  => vdr_out,
+	  port map (
+			input_0_0 => vdr_out,
+			input_0_1 => to_Boolean(vdr_out_rdy),
 			 -- clock
 			 system1000 => tck,
 			 -- asynchronous reset: active low
 			 system1000_rstn => pp_reset,
-			 std_logic_vector(output_0_0)  => vdr_in(11 downto 4),
-			 to_stdulogic(output_0_1)  => vdr_in(3),
-			 to_stdulogic(output_0_2)  => vdr_in(2)
+			 std_logic_vector(output_0_0)  => vdr_in(11 downto 3),
+			 to_stdulogic(output_0_1)  => vdr_in(2),
+			 to_stdulogic(output_0_2)  => vdr_in(1)
 	  );
 	  
 	  LED(7 downto 1) <= vdr_in(10 downto 4);
-	  vdr_in(1 downto 0) <= "00";
+	  
+	  vdr_in(0 downto 0) <= "0";
                            
 end architecture syn;
 
