@@ -6,15 +6,22 @@
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE DeriveLift #-}
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveAnyClass #-}
 
 module PacketProcessor (packetProcessor, MemOp(..), DataV, MemAddr, topEntity) where
 
 import CLaSH.Prelude
 
+import GHC.Generics (Generic)
+import Control.DeepSeq
+
+
 type DataV = Unsigned 8
 type MemAddr = Unsigned 11
 
-data MemOp = READ MemAddr | WRITE DataV deriving Lift;
+data MemOp = READ MemAddr | WRITE DataV
+  deriving (Lift, Show, ShowX, Generic, NFData); -- For clash interactive
 
 packetProcessor::
     Signal MemOp -> Signal Bool -- ^ Memory operation
