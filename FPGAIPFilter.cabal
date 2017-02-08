@@ -97,5 +97,6 @@ test-suite Test-PacketProcessor
                        , lens
                        , transformers
                        , protolude
+                       , deepseq
     hs-source-dirs:      test, app
     default-language:    Haskell2010
