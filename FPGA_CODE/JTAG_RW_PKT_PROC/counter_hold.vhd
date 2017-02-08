@@ -3,10 +3,13 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity counter_hold is
-   generic ( HOLD_FOR : INTEGER) ;
-   port( clk         : in  std_logic;
-         hold_out : out std_logic
-       );
+   generic 
+		( HOLD_FOR : integer
+		);
+   port
+		( clk      : in  std_logic
+		; hold_out : out std_logic
+      );
 end entity counter_hold;
 
 architecture syn of counter_hold is

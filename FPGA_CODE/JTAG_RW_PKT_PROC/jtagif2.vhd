@@ -2,21 +2,24 @@ library ieee;
 use ieee.std_logic_1164.all;
 
 entity jtagif2 is
-   generic ( DR_BITS : integer  ) ;
-   port( tck         : in  std_logic;
-         tdi         : in  std_logic;
-         tdo         : out std_logic;
-         aclr        : in  std_logic;
-         sdr         : in  std_logic;
-         udr         : in  std_logic;
-         cdr         : in  std_logic;
-         ir_in       : in  std_logic_vector(1 downto 0);
-         vdr_out     : out std_logic_vector(DR_BITS - 1 downto 0);
-         vdr_out_rdy : out std_logic;
-         vdr_in      : in  std_logic_vector(DR_BITS - 1 downto 0);
-         vdr_in_rdy  : out std_logic;
-         ir_out      : out std_logic_vector(1 downto 0)
-       );
+   generic 
+		( DR_BITS : integer  
+		);
+   port
+		( tck         : in  std_logic
+		; tdi         : in  std_logic
+		; tdo         : out std_logic
+		; aclr        : in  std_logic
+		; sdr         : in  std_logic
+		; udr         : in  std_logic
+		; cdr         : in  std_logic
+		; ir_in       : in  std_logic_vector(1 downto 0)
+		; vdr_out     : out std_logic_vector(DR_BITS - 1 downto 0)
+		; vdr_out_rdy : out std_logic
+		; vdr_in      : in  std_logic_vector(DR_BITS - 1 downto 0)
+		; vdr_in_rdy  : out std_logic
+		; ir_out      : out std_logic_vector(1 downto 0)
+      );
 end entity jtagif2;
 
 
@@ -30,7 +33,6 @@ architecture rtl of jtagif2 is
    signal write_out     : std_logic_vector(TOP_BIT downto 0);
    signal vdr_out_rdy_1 : std_logic;
    signal vdr_out_rdy_2 : std_logic;
-   
    
 begin
    process(tck)

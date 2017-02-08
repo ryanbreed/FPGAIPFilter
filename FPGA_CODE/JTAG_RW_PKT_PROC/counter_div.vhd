@@ -3,10 +3,14 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity counter_div is
-   generic ( OFFSET : INTEGER; BIT_WIDTH : INTEGER) ;
-   port( clk         : in  std_logic;
-         counter_out : out std_logic_vector((BIT_WIDTH - 1) downto 0)
-       );
+   generic 
+		( OFFSET : integer
+		; BIT_WIDTH : integer
+		);
+   port
+		( clk         : in  std_logic
+		; counter_out : out std_logic_vector((BIT_WIDTH - 1) downto 0)
+      );
 end entity counter_div;
 
 architecture syn of counter_div is
