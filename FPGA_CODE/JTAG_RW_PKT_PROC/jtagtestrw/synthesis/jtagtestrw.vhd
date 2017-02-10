@@ -10,8 +10,8 @@ entity jtagtestrw is
 	port (
 		tdi                : out std_logic;                                       -- jtag.tdi
 		tdo                : in  std_logic                    := '0';             --     .tdo
-		ir_in              : out std_logic_vector(1 downto 0);                    --     .ir_in
-		ir_out             : in  std_logic_vector(1 downto 0) := (others => '0'); --     .ir_out
+		ir_in              : out std_logic_vector(2 downto 0);                    --     .ir_in
+		ir_out             : in  std_logic_vector(2 downto 0) := (others => '0'); --     .ir_out
 		virtual_state_cdr  : out std_logic;                                       --     .virtual_state_cdr
 		virtual_state_sdr  : out std_logic;                                       --     .virtual_state_sdr
 		virtual_state_e1dr : out std_logic;                                       --     .virtual_state_e1dr
@@ -34,8 +34,8 @@ architecture rtl of jtagtestrw is
 		port (
 			tdi                : out std_logic;                                       -- tdi
 			tdo                : in  std_logic                    := 'X';             -- tdo
-			ir_in              : out std_logic_vector(1 downto 0);                    -- ir_in
-			ir_out             : in  std_logic_vector(1 downto 0) := (others => 'X'); -- ir_out
+			ir_in              : out std_logic_vector(2 downto 0);                    -- ir_in
+			ir_out             : in  std_logic_vector(2 downto 0) := (others => 'X'); -- ir_out
 			virtual_state_cdr  : out std_logic;                                       -- virtual_state_cdr
 			virtual_state_sdr  : out std_logic;                                       -- virtual_state_sdr
 			virtual_state_e1dr : out std_logic;                                       -- virtual_state_e1dr
@@ -52,9 +52,9 @@ begin
 
 	virtual_jtag_0 : component sld_virtual_jtag
 		generic map (
-			sld_auto_instance_index => "YES",
+			sld_auto_instance_index => "NO",
 			sld_instance_index      => 0,
-			sld_ir_width            => 2
+			sld_ir_width            => 3
 		)
 		port map (
 			tdi                => tdi,                -- jtag.tdi

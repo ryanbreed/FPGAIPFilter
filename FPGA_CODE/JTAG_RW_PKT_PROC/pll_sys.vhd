@@ -306,7 +306,7 @@ END SYN;
 -- Retrieval info: PRIVATE: STICKY_CLK1 STRING "1"
 -- Retrieval info: PRIVATE: SWITCHOVER_COUNT_EDIT NUMERIC "1"
 -- Retrieval info: PRIVATE: SWITCHOVER_FEATURE_ENABLED STRING "1"
--- Retrieval info: PRIVATE: SYNTH_WRAPPER_GEN_POSTFIX STRING "0"
+-- Retrieval info: PRIVATE: SYNTH_WRAPPER_GEN_POSTFIX STRING "1"
 -- Retrieval info: PRIVATE: USE_CLK0 STRING "1"
 -- Retrieval info: PRIVATE: USE_CLK1 STRING "1"
 -- Retrieval info: PRIVATE: USE_CLKENA0 STRING "0"
@@ -388,6 +388,7 @@ END SYN;
 -- Retrieval info: GEN_FILE: TYPE_NORMAL pll_sys.inc FALSE
 -- Retrieval info: GEN_FILE: TYPE_NORMAL pll_sys.cmp TRUE
 -- Retrieval info: GEN_FILE: TYPE_NORMAL pll_sys.bsf FALSE
--- Retrieval info: GEN_FILE: TYPE_NORMAL pll_sys_inst.vhd FALSE
+-- Retrieval info: GEN_FILE: TYPE_NORMAL pll_sys_inst.vhd TRUE
+-- Retrieval info: GEN_FILE: TYPE_NORMAL pll_sys_syn.v TRUE
 -- Retrieval info: LIB_FILE: altera_mf
 -- Retrieval info: CBX_MODULE_PREFIX: ON

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="jtagtestrw" kind="system" version="16.1" fabric="QSYS">
  <!-- Format version 16.1 200 (Future versions may contain additional information.) -->
- <!-- 2017.01.31.01:38:32 -->
+ <!-- 2017.02.09.14:08:41 -->
  <!-- A collection of modules and connections -->
  <parameter name="clockCrossingAdapter">
   <type>com.altera.sopcmodel.ensemble.EClockAdapter</type>
@@ -53,7 +53,7 @@
  </parameter>
  <parameter name="generationId">
   <type>int</type>
-  <value>1485787112</value>
+  <value>1486609721</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>true</visible>
@@ -101,7 +101,7 @@
  </parameter>
  <parameter name="projectName">
   <type>java.lang.String</type>
-  <value></value>
+  <value>DE0_Nano_project_Base.qpf</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
@@ -165,7 +165,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="gui_use_auto_index">
    <type>boolean</type>
-   <value>true</value>
+   <value>false</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -173,7 +173,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="sld_auto_instance_index">
    <type>java.lang.String</type>
-   <value>YES</value>
+   <value>NO</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -183,13 +183,13 @@ the requested settings for a module instance. -->
    <type>int</type>
    <value>0</value>
    <derived>false</derived>
-   <enabled>false</enabled>
+   <enabled>true</enabled>
    <visible>true</visible>
    <valid>true</valid>
   </parameter>
   <parameter name="sld_ir_width">
    <type>int</type>
-   <value>2</value>
+   <value>3</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -272,13 +272,13 @@ parameters are a RESULT of the module parameters. -->
    <port>
     <name>ir_in</name>
     <direction>Output</direction>
-    <width>2</width>
+    <width>3</width>
     <role>ir_in</role>
    </port>
    <port>
     <name>ir_out</name>
     <direction>Input</direction>
-    <width>2</width>
+    <width>3</width>
     <role>ir_out</role>
    </port>
    <port>
@@ -425,5 +425,5 @@ parameters are a RESULT of the module parameters. -->
   <version>16.1</version>
  </plugin>
  <reportVersion>16.1 200</reportVersion>
- <uniqueIdentifier>985FD3421F8400000159EFD022EF</uniqueIdentifier>
+ <uniqueIdentifier>985FD3421F840000015A20D82A26</uniqueIdentifier>
 </EnsembleReport>

@@ -28,12 +28,12 @@ irAddrVir, irAddrVdr :: Word16
 irAddrVir = 0x0E
 irAddrVdr = 0x0C
 
-virAddrBase :: Word8
-virAddrBase = 0x10
+virAddrBase :: Word16
+virAddrBase = 0x400 -- for one ram 0x100 -- for one hub jtag = 0x10
 
 irAddrLen, virAddrLen :: Int
 irAddrLen  = 10
-virAddrLen = 5
+virAddrLen = 12 -- for one ram 10 -- for one hub jtag instance = 5
 
 jtagM0D0R, jtagM0D1R, jtagM1D0R, jtagM1D1R :: [Word8]
 -- Bit-mode - Two byte codes
@@ -181,7 +181,7 @@ virWrite d addr = do
   -- @todo addr < virAddrBase
   l <- irWrite d $ toBits irAddrLen irAddrVir
   l1 <- ftdiWriteData d $ B.pack tapShiftVDRSeq
-  l2 <- jtagWriteBits d $ toBits virAddrLen $ virAddrBase + addr
+  l2 <- jtagWriteBits d $ toBits virAddrLen $ virAddrBase + fromIntegral addr
   l3 <- ftdiWriteData d $ B.pack tapEndSeq
   pure $ l + l1 + l2 + l3
 

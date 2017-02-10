@@ -13,12 +13,12 @@ entity jtagif2 is
 		; sdr         : in  std_logic
 		; udr         : in  std_logic
 		; cdr         : in  std_logic
-		; ir_in       : in  std_logic_vector(1 downto 0)
+		; ir_in       : in  std_logic_vector(2 downto 0)
 		; vdr_out     : out std_logic_vector(DR_BITS - 1 downto 0)
 		; vdr_out_rdy : out std_logic
 		; vdr_in      : in  std_logic_vector(DR_BITS - 1 downto 0)
 		; vdr_in_rdy  : out std_logic
-		; ir_out      : out std_logic_vector(1 downto 0)
+		; ir_out      : out std_logic_vector(2 downto 0)
       );
 end entity jtagif2;
 
@@ -26,8 +26,8 @@ end entity jtagif2;
 architecture rtl of jtagif2 is
    constant TOP_BIT     : integer := DR_BITS - 1;
    
-   constant READV       : std_logic_vector(1 downto 0) := "01";
-   constant WRITEV      : std_logic_vector(1 downto 0) := "10";
+   constant READV       : std_logic_vector(2 downto 0) := "001";
+   constant WRITEV      : std_logic_vector(2 downto 0) := "010";
 
    signal read_in       : std_logic_vector(TOP_BIT downto 0);
    signal write_out     : std_logic_vector(TOP_BIT downto 0);
