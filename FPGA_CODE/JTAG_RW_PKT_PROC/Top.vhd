@@ -139,7 +139,35 @@ begin
 			, counter_out => LED(0 downto 0)
          );
 	
-   -- IR WIDTH must be 3
+-- IR WIDTH must be 3 at the moment.
+
+-- For addressing VIR and sizing data for the virtual JTAG you can observe the 
+
+-- Compilation Report/Analysis and Synthesis/Debug settings summary/Virtual JTAG settings
+-- Which give parameters that are used in JtagRW.hs (#nastyhack for now) 
+-- 	virAddrLen <= "User DR1 Length"
+-- 	virAddrLen <= " Address"
+--    and likely the 0xE, 0xC - TBC 
+
+-- Can also get those parameters via TCL
+-- 	open_device -hardware_name {USB-Blaster [1-1]}  -device_name {@1: EP3C25/EP4CE22 (0x020F30DD)}
+--		device_lock -timeout 10000
+--		device_virtual_ir_shift -instance_index 0 -ir_value 1 -show_equivalent_device_ir_dr_shift
+--
+--Info (16701): device_ir_shift -ir_value 14
+--Info (16701): device_dr_shift -length 12 -dr_value 00B -value_in_hex
+--Info (16701): device_dr_shift -length 12 -dr_value 401 -value_in_hex
+
+-- These can be interogated from the FPGA - problem for later. 
+
+-- These change parameters as more JTAG components are added/removed 
+-- Such as:
+--   * virtual JTAG
+--   * extractable RAM
+--   * Signal II analyser
+
+-- Note: the clash generated RAM can not be made readable as is already dual port.
+
    inst_jtagtest : jtagtestrw
       port map 
 			( tdi               => tdi
@@ -190,13 +218,22 @@ begin
 			, to_stdulogic(output_0_2)      => vdr_in(1)
 			);
 	  
+--	Since we can't actively use the Signal2 logic analyser whilst using 
+--	Jtag for data we can capture some events here and extract when the 
+--	Jtag is done. Not pretty but works OK. See runMemGet.sh at top level.
+
+-- tcl:
+--		begin_memory_edit -hardware_name "USB-Blaster \[1-1\]" -device_name "@1: EP3C25/EP4CE22 (0x020F30DD)"
+--		puts [read_content_from_memory -instance_index 0 -start_address 0 -word_count 8192 -content_in_hex]
+--		end_memory_edit
+	
 	inst_dbgsnap : dbgsnap
 		port map 
 			( clk => dbg_clk
 			, tr => dbg_trg
 			, dbg_in => dbg_data 
 			);	  
-			
+	-- Just for testing...
 	dbg_clk <= (sys_clk) and pll_locked and pp_reset;
 	dbg_data <= vdr_out & tck & sdr & cdr & udr;
 	dbg_trg <= udr;

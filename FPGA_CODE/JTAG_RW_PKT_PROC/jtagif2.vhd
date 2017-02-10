@@ -25,7 +25,7 @@ end entity jtagif2;
 
 architecture rtl of jtagif2 is
    constant TOP_BIT     : integer := DR_BITS - 1;
-   
+   -- must match constants in JtagRW.hs
    constant READV       : std_logic_vector(2 downto 0) := "001";
    constant WRITEV      : std_logic_vector(2 downto 0) := "010";
 
