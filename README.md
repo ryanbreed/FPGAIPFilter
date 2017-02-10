@@ -8,7 +8,9 @@ For test data input use USB Blaster.
 
 ## Status
 
-- Bidirectional data transfer via USB Blaster JTAG
+- Skeleton and tooling are in place (POC)
+- Refactor JTAG interfacing
+- Move packet processor to clash dataflow?
 
 ## Todo
 - See projects / issues
@@ -18,7 +20,11 @@ For test data input use USB Blaster.
 - bindings-libftdi, could improve error handling - expose more of libftdi
 
 # Done
-- Using https://github.com/victoredwardocallaghan/bindings-libftdi (forked @ https://github.com/tau-tao/bindings-libftdi) can drive the "InitialTest.sof" sample from test/FtdiTest1.hs
+- Using https://github.com/victoredwardocallaghan/bindings-libftdi (forked @ https://github.com/tau-tao/bindings-libftdi) - Can drive the "InitialTest.sof" sample from test/FtdiTest1.hs (mods to JtagRW.hs - addressing see Top.vhd)
+- Can drive the PacketProcessor derived from clash
+- Notes on the addressing changes when adding other JTAG components such as JTAG readable RAM and Sig2 logic analyser
+- Scripts for extracting RAM.
+- Bidirectional data transfer via USB Blaster JTAG
 
 ### Resources:
 
