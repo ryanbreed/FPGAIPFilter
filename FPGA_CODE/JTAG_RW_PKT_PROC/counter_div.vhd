@@ -13,7 +13,7 @@ entity counter_div is
       );
 end entity counter_div;
 
-architecture syn of counter_div is
+architecture rtl of counter_div is
    
    signal counter_data : std_logic_vector(31 downto 0) := (others => '0');  
   
@@ -30,4 +30,4 @@ begin
   
    counter_out <= counter_data((OFFSET + BIT_WIDTH - 1) downto OFFSET);
 
-end architecture syn;
+end architecture rtl;

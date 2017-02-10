@@ -1,4 +1,4 @@
--- Automatically generated VHDL-93
+ -- Automatically generated VHDL-93
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
