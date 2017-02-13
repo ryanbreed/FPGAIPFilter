@@ -1,41 +1,36 @@
 {-# LANGUAGE FlexibleContexts #-}
 
-import qualified Data.Text as T
-import           JtagRW    (tapReset, toBits, fromBits, vdrWrite, vdrWriteRead,
-                            virAddrOff, virAddrRead, virAddrWrite, virWrite)
-import           LibFtdi   (DeviceHandle, ftdiDeInit, ftdiInit, ftdiUSBClose,
-                            ftdiUSBOpen, ftdiUSBReset, withFtdi)
+import qualified Data.ByteString as B
+import qualified Data.Text       as T
+import           JtagRW          (UsbBlasterState, flush, fromBits, printState,
+                                  toBits, vdrWrite, vdrWriteRead, virAddrOff,
+                                  virAddrRead, virAddrWrite, virWrite,
+                                  withUSBBlaster)
 import           Protolude
 
 
 -- FOR ./FPGA_CODE/JTAG_RW
+vdrWidth :: Int
+vdrWidth = 7
 
-outLed :: DeviceHandle -> Word32 -> IO Int
-outLed d v = do
-  l0 <- virWrite d virAddrWrite
-  l1 <- vdrWrite d $ toBits 7 v
-  l3 <- virWrite d virAddrRead
-  (l4, rd) <- vdrWriteRead d $ toBits 7 (0 :: Word8)
-  l5 <- virWrite d virAddrOff
-  print $ fromBits rd
-  -- threadDelay 20000
-  return $ l0 + l1 + l3 + l4 + l5
+outLed :: Word8 -> (StateT UsbBlasterState) IO (Maybe ByteString)
+outLed v = do
+  _ <- virWrite virAddrWrite
+  _ <- vdrWrite $ toBits vdrWidth v
+  _ <- virWrite virAddrOff
+  _ <- flush
+  return $ Just "todo"
 
-doStuff :: DeviceHandle -> IO ()
-doStuff d = do
-  ftdiUSBOpen d (0x09fb, 0x6001)
-  ftdiUSBReset d
-  _ <- tapReset d
-  _ <- mapM (outLed d) [0..127]
-  _ <- mapM (outLed d) $ join $ replicate 16 [1, 2, 4, 8, 16, 32, 64, 32, 16, 8, 4, 2, 1]
-  _ <- mapM (outLed d) [127,126..0]
-  putStrLn ("Init OK." :: Text)
-  ftdiUSBClose d
-  ftdiDeInit d
+doStuff :: (StateT UsbBlasterState) IO (Maybe B.ByteString)
+doStuff = do
+  _ <- mapM outLed [0..127]
+  _ <- mapM outLed $ join $ replicate 16 [1, 2, 4, 8, 16, 32, 64, 32, 16, 8, 4, 2, 1]
+  _ <- mapM outLed [127,126..0]
+  return Nothing
 
 main :: IO ()
 main = do
-    dh <- ftdiInit
+    dh <- withUSBBlaster 0x10 10 5 doStuff
     case dh of
-      Left err -> putStrLn $ T.pack $ "Error:" ++ show err
-      Right _ -> withFtdi doStuff
+      Just err -> putStrLn $ T.pack $ "Error:" ++ show err
+      Nothing -> pure ()
