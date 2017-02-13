@@ -196,7 +196,8 @@ begin
 			, vdr_in      => vdr_in
          -- , vdr_in_rdy
          ); 
-				
+			
+	-- @todo synchroniser on the pll_locked			
 	inst_pp_reset : counter_hold 
       generic map 
 			( HOLD_FOR => 4 )
@@ -217,6 +218,26 @@ begin
 			, to_stdulogic(output_0_1)      => vdr_in(2)
 			, to_stdulogic(output_0_2)      => vdr_in(1)
 			);
+			
+	inst_pkt_proc2 : packetprocessordf_topentity
+		port map 
+			( input_0_0                     => vdr_out
+			, input_0_1                     => to_Boolean(vdr_out_rdy)
+			-- clock
+			, system1000                    => not tck
+			-- asynchronous reset: active low
+			, system1000_rstn               => pp_reset
+			--, std_logic_vector(output_0_0)  => dbg_data(15 downto 5)
+			, std_logic_vector(output_0_1)  => dbg_data(15 downto 5)
+			, std_logic_vector(output_0_2)  => dbg_data(4 downto 1)
+			--, std_logic_vector(output_0_3)  => dbg_data(1)
+			);
+			
+--			output_0_0      : out unsigned(10 downto 0);
+--       output_0_1      : out unsigned(10 downto 0);
+--       output_0_2      : out unsigned(3 downto 0);
+--       output_0_3      : out unsigned(15 downto 0));
+		 
 	  
 --	Since we can't actively use the Signal2 logic analyser whilst using 
 --	Jtag for data we can capture some events here and extract when the 
@@ -235,7 +256,7 @@ begin
 			);	  
 	-- Just for testing...
 	dbg_clk <= (sys_clk) and pll_locked and pp_reset;
-	dbg_data <= vdr_out & tck & sdr & cdr & udr;
+	-- dbg_data <= vdr_out & tck & sdr & cdr & udr;
 	dbg_trg <= udr;
 
 	LED(7 downto 1) <= vdr_in(10 downto 4);

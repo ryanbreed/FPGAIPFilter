@@ -38,6 +38,19 @@ executable FPGAIPFilter-exe
   default-language:    Haskell2010
   default-extensions:  OverloadedStrings, NoImplicitPrelude
 
+executable FPGAIPFilter-df
+    hs-source-dirs:      app
+    main-is:             PacketProcessorDF.hs
+    ghc-options:         -Wall -threaded -rtsopts -with-rtsopts=-N
+    build-depends:       base
+                       , clash-prelude
+                       , lens
+                       , transformers
+                       , protolude
+                       , deepseq
+    default-language:    Haskell2010
+    default-extensions:  OverloadedStrings, NoImplicitPrelude
+
 test-suite FPGAIPFilter-test
   type:                exitcode-stdio-1.0
   hs-source-dirs:      test
