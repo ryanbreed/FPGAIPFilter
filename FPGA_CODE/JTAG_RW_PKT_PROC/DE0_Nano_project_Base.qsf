@@ -43,8 +43,8 @@
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 10.1
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "16:22:00 FEBRUARY 21,2011"
 set_global_assignment -name LAST_QUARTUS_VERSION "16.1.1 Lite Edition"
-set_global_assignment -name SMART_RECOMPILE ON
-set_global_assignment -name NUM_PARALLEL_PROCESSORS 2
+set_global_assignment -name SMART_RECOMPILE OFF
+set_global_assignment -name NUM_PARALLEL_PROCESSORS ALL
 
 # Pin & Location Assignments
 # ==========================
@@ -520,7 +520,17 @@ set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_COUNTER_PIPELINE=
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ADVANCED_TRIGGER_ENTITY=sld_reserved_DE0_Nano_project_Base_auto_signaltap_0_1_b793," -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_LEVEL_PIPELINE=1" -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ENABLE_ADVANCED_TRIGGER=1" -section_id auto_signaltap_0
-set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
+set_global_assignment -name FLOW_ENABLE_RTL_VIEWER ON
+set_global_assignment -name TIMEQUEST_MULTICORNER_ANALYSIS ON
+set_global_assignment -name ENABLE_DRC_SETTINGS ON
+set_global_assignment -name QSYS_FILE clckctrl.qsys
+set_global_assignment -name VHDL_FILE PacketProcessorDF/packetprocessordf_types.vhdl
+set_global_assignment -name VHDL_FILE PacketProcessorDF/packetprocessordf_topentity_0.vhdl
+set_global_assignment -name VHDL_FILE PacketProcessorDF/packetprocessordf_topentity.vhdl
+set_global_assignment -name VHDL_FILE PacketProcessorDF/packetprocessordf_testbench.vhdl
+set_global_assignment -name VHDL_FILE PacketProcessorDF/packetprocessordf_packetprocessor.vhdl
+set_global_assignment -name VHDL_FILE PacketProcessorDF/packetprocessordf_moore.vhdl
+set_global_assignment -name VHDL_FILE PacketProcessorDF/packetprocessordf_cnt.vhdl
 set_global_assignment -name VHDL_FILE PacketProcessor/packetprocessor_readnew.vhdl
 set_global_assignment -name VHDL_FILE PacketProcessor/packetprocessor_blockram.vhdl
 set_global_assignment -name VHDL_FILE PacketProcessor/packetprocessor_types.vhdl
@@ -540,3 +550,4 @@ set_global_assignment -name VHDL_FILE counter_div_trig.vhd
 set_global_assignment -name VHDL_FILE dbgsnap.vhd
 set_global_assignment -name VHDL_FILE test/test_dbgsnap.vhd
 set_global_assignment -name SLD_FILE db/stp1_auto_stripped.stp
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

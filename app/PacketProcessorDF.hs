@@ -9,7 +9,7 @@
 {-# LANGUAGE TemplateHaskell     #-}
 {-# LANGUAGE TypeOperators       #-}
 
-module PacketProcessorDF (packetProcessor, MemOp(..), DataV, MemAddr, topEntity) where
+module PacketProcessorDF (packetProcessor, MemOp(..), DataV, MemAddr, topEntity, expectedOutput) where
 
 import           CLaSH.Prelude
 
@@ -55,7 +55,7 @@ cnt s x = case x of
                             then Just d
                             else Nothing
                      ndone = left s == 0 in
-    s { counter = counter s + 1, left = nleft, ihl = nihl, pktLength = npl, lastData = nd, done = ndone}
+    CounterState (counter s + 1) nleft nihl npl nd ndone
   Reset -> resetCounterState
   Off -> s {done = left s == 0}
 
