@@ -1,17 +1,25 @@
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell   #-}
+
 module Lib.JtagRW
-(
-  tapReset,
-  virAddrWrite, virAddrRead, virAddrOff,
-  virWrite, vdrWrite, vdrWriteRead,
-  toBits, fromBits,
-) where
+  ( UsbBlasterState
+  , withUSBBlaster
+  , virAddrWrite, virAddrRead, virAddrOff
+  , virWrite, vdrWrite, vdrWriteRead
+  , toBits, fromBits
+  , flush
+  , readInput
+  , printState
+  ) where
 
-import qualified Data.ByteString as B
-import           LibFtdi         (DeviceHandle, ftdiReadData, ftdiWriteData)
-import           Protolude
-
--- Derived from https://github.com/GeezerGeek/open_sld/blob/master/sld_interface.py,
--- And: http://sourceforge.net/p/ixo-jtag/code/HEAD/tree/usb_jtag/
+import           Protolude                 hiding (get)
+import qualified Data.ByteString           as B
+import           Control.Monad.Trans.State
+import           Control.Lens
+import           LibFtdi                   (DeviceHandle, ftdiDeInit, ftdiInit,
+                                            ftdiReadData, ftdiUSBClose,
+                                            ftdiUSBOpen, ftdiUSBReset,
+                                            ftdiWriteData, withFtdi)
 
 jtagTCK, jtagTMS, jtagTDI, jtagLED, jtagRD :: Word8
 --jtagOFF = 0x00
@@ -27,13 +35,6 @@ jtagRD  = 0x40
 irAddrVir, irAddrVdr :: Word16
 irAddrVir = 0x0E
 irAddrVdr = 0x0C
-
-virAddrBase :: Word16
-virAddrBase = 0x400 -- for one ram 0x100 -- for one hub jtag = 0x10
-
-irAddrLen, virAddrLen :: Int
-irAddrLen  = 10
-virAddrLen = 12 -- for one ram 10 -- for one hub jtag instance = 5
 
 jtagM0D0R, jtagM0D1R, jtagM1D0R, jtagM1D1R :: [Word8]
 -- Bit-mode - Two byte codes
@@ -64,6 +65,8 @@ jtagM1D1 = [ jtagLED .|. jtagTMS .|. jtagTDI
            , jtagLED .|. jtagTMS .|. jtagTDI              .|. jtagTCK
            ]
 
+fdtiChunkSize :: Int
+fdtiChunkSize = 63
 -- TAP controller Reset
 tapResetSeq :: [Word8]
 tapResetSeq = jtagM1D0 ++ jtagM1D0 ++ jtagM1D0 ++ jtagM1D0 ++ jtagM1D0
@@ -106,29 +109,103 @@ revSplitMsb::[Bool] -> Maybe (Bool, [Bool])
 revSplitMsb [] = Nothing
 revSplitMsb (x:xs) = Just (x, reverse xs)
 
-mkBytesJtag :: Maybe (Bool, [Bool]) ->
+mkBytesJtag ::  [Word8] -> [Word8] ->
                 [Word8] -> [Word8] ->
-                [Word8] -> [Word8] ->
+                Maybe (Bool, [Bool]) ->
                 [Word8]
-mkBytesJtag msbBits v0 v1 vm0 vm1 =
+mkBytesJtag v0 v1 vm0 vm1 msbBits =
   case msbBits of
     Nothing -> []
     Just (msb, bits) ->
       join (fmap (\v -> if v then v1 else v0) bits) ++ if msb then vm1 else vm0
 
-jtagWriteBits::DeviceHandle -> [Bool] -> IO Int
-jtagWriteBits d bits = ftdiWriteData d $ B.pack $
-      mkBytesJtag (revSplitMsb bits) jtagM0D0 jtagM0D1 jtagM1D0 jtagM1D1
+mkJtagWrite:: [Bool] -> [Word8]
+mkJtagWrite bits = mkBytesJtag jtagM0D0 jtagM0D1 jtagM1D0 jtagM1D1
+                     $ revSplitMsb bits
+
+mkJtagWriteRead:: [Bool] -> [Word8]
+mkJtagWriteRead bits = mkBytesJtag jtagM0D0R jtagM0D1R jtagM1D0R jtagM1D1R
+                         $ revSplitMsb bits
 
 lsbToBool :: [Word8] -> [Bool]
 lsbToBool b = fmap (\v -> v .&. 1 /= 0) b
 
--- @todo cleanup
+-- @todo add Reader
+data UsbBlasterState = UsbBlasterState
+  { _usblD           :: DeviceHandle
+  , _usblOut         :: [Word8]
+  , _usblInReq       :: Int -- size and callback? array?
+  , _usblRetries     :: Int
+  , _usblTimeout     :: Int
+  , _usblVirAddrBase :: Word16
+  , _usblIrAddrLen   :: Int
+  , _usblVirAddrLen  :: Int
+  }
+makeLenses ''UsbBlasterState
+
+-- @todo better I/F - store all flushed input in state
+flush :: (StateT UsbBlasterState) IO (Maybe [Bool])
+flush = do
+  s <- get
+  _ <- liftIO $ ftdiWriteData (s^.usblD) (B.pack $ s^.usblOut)
+  i <- liftIO $ if s^.usblInReq > 0
+        then
+          ftdiReadWithTimeout (s^.usblD) "" (s^.usblInReq)
+                                 (s^.usblRetries) (s^.usblTimeout)
+        else
+          pure $ Just ""
+  usblOut .= []
+  usblInReq .= 0
+  return $ lsbToBool . B.unpack <$> i
+
+addOutput :: [Word8] -> (StateT UsbBlasterState) IO (Maybe [Bool])
+addOutput o = do
+  s <- get
+  if length (s^.usblOut) + length o >= fdtiChunkSize
+    then do
+      f <- flush
+      usblOut .= o
+      return f
+    else do
+      usblOut <>= o
+      return Nothing -- @todo need either for errors
+
+readInput :: Int -> (StateT UsbBlasterState) IO (Maybe [Bool])
+readInput sz = do
+  s <- get
+  if s^.usblInReq + sz >= fdtiChunkSize
+    then do
+      f <- flush
+      usblInReq .= sz
+      return f
+    else do
+      usblInReq += sz
+      return Nothing
+
+withUSBBlaster :: Word16 -> Int -> Int
+                ->(StateT UsbBlasterState) IO (Maybe B.ByteString)
+                -> IO (Maybe [Char])
+withUSBBlaster ad irl virl f = do
+    dh <- ftdiInit
+    case dh of
+      Left err -> return $ Just $ "Error:" ++ show err
+      Right _ ->
+        withFtdi ( \d -> do
+          ftdiUSBOpen d (0x09fb, 0x6001)
+          ftdiUSBReset d
+          _ <- tapReset d
+          _ <- runStateT f (UsbBlasterState d [] 0 5 1000 ad irl virl)
+          ftdiUSBClose d
+          ftdiDeInit d
+          return Nothing )
+
+-- @todo cleanup - monad loop
 ftdiReadWithTimeout :: DeviceHandle -> B.ByteString -> Int -> Int -> Int ->
                       IO (Maybe B.ByteString)
 ftdiReadWithTimeout d acc left iter delay =
    if iter == 0
-      then pure Nothing
+      then do
+        pure Nothing
       else do
         rd <- ftdiReadData d left
         case rd of
@@ -143,15 +220,6 @@ ftdiReadWithTimeout d acc left iter delay =
                     else do
                       threadDelay delay
                       ftdiReadWithTimeout d newacc newleft (iter - 1) delay
-
-jtagWriteReadBits::DeviceHandle -> [Bool] -> IO (Int, [Bool])
-jtagWriteReadBits d bits = do
-  sz <- ftdiWriteData d $ B.pack $
-          mkBytesJtag (revSplitMsb bits) jtagM0D0R jtagM0D1R jtagM1D0R jtagM1D1R
-  rd <- ftdiReadWithTimeout d "" (length bits) 5 1000 -- @todo parameters
-  case rd of
-    Just r -> pure (sz, lsbToBool $ B.unpack r)
-    _ -> pure (sz, [])
 
 tapReset::DeviceHandle -> IO Int
 tapReset d = ftdiWriteData d $ B.pack $ tapResetSeq ++ tapIdleSeq
@@ -169,37 +237,45 @@ fromBits [] = 0
 fromBits x = foldr addPwr 0 $ zip x pwr2
   where addPwr (b,n) a = if b then a + n else a
 
-irWrite::DeviceHandle -> [Bool] -> IO Int
-irWrite d b = do
-  l <- ftdiWriteData d $ B.pack tapShiftVIRSeq
-  l1 <- jtagWriteBits d b
-  l2 <- ftdiWriteData d $ B.pack tapEndSeq
-  pure $ l + l1 + l2
+-- @todo ignored returns, errors
+irWrite:: [Bool] -> (StateT UsbBlasterState) IO (Maybe B.ByteString)
+irWrite b = do
+  _ <- addOutput tapShiftVIRSeq
+  _ <- addOutput $ mkJtagWrite b
+  _ <- addOutput tapEndSeq
+  pure $ Just "@TODO fix me"
 
-virWrite::DeviceHandle -> Word8 -> IO Int
-virWrite d addr = do
-  -- @todo addr < virAddrBase
-  l <- irWrite d $ toBits irAddrLen irAddrVir
-  l1 <- ftdiWriteData d $ B.pack tapShiftVDRSeq
-  l2 <- jtagWriteBits d $ toBits virAddrLen $ virAddrBase + fromIntegral addr
-  l3 <- ftdiWriteData d $ B.pack tapEndSeq
-  pure $ l + l1 + l2 + l3
+virWrite:: Word8 -> (StateT UsbBlasterState) IO (Maybe B.ByteString)
+virWrite addr = do
+  -- @todo addr checks?
+  s <- get
+  _ <- irWrite $ toBits (s^.usblIrAddrLen) irAddrVir
+  _ <- addOutput tapShiftVDRSeq -- @todo name!?
+  _ <- addOutput $ mkJtagWrite $ toBits (s^.usblVirAddrLen) $ (s^.usblVirAddrBase) + fromIntegral addr
+  _ <- addOutput tapEndSeq
+  pure $ Just "@TODO fix me"
 
-vdrWrite::DeviceHandle -> [Bool] -> IO Int
-vdrWrite d b = do
-  l <- irWrite d $ toBits irAddrLen irAddrVdr
-  l1 <- ftdiWriteData d $ B.pack tapShiftVDRSeq
-  l2 <- jtagWriteBits d b
-  l3 <- ftdiWriteData d $ B.pack tapEndSeq
-  pure $ l + l1 + l2 + l3
+vdrWrite:: [Bool] -> (StateT UsbBlasterState) IO (Maybe B.ByteString)
+vdrWrite b = do
+  s <- get
+  _ <- irWrite $ toBits (s^.usblIrAddrLen) irAddrVdr
+  _ <- addOutput tapShiftVDRSeq
+  _ <- addOutput $ mkJtagWrite b
+  _ <- addOutput tapEndSeq
+  pure $ Just "@TODO fix me"
 
-vdrWriteRead::DeviceHandle -> [Bool] -> IO (Int, [Bool])
-vdrWriteRead d b = do
-  l <- irWrite d $ toBits irAddrLen irAddrVdr
-  l1 <- ftdiWriteData d $ B.pack tapShiftVDRSeq
-  (l2, r) <- jtagWriteReadBits d b
-  l3 <- ftdiWriteData d $ B.pack tapEndSeq
-  pure (l + l1 + l2 + l3, r)
+vdrWriteRead:: [Bool] -> (StateT UsbBlasterState) IO (Maybe B.ByteString)
+vdrWriteRead b = do
+  s <- get
+  _ <- irWrite $ toBits (s^.usblIrAddrLen) irAddrVdr
+  _ <- addOutput tapShiftVDRSeq
+  _ <- addOutput $ mkJtagWriteRead b
+  _ <- readInput $ length b
+  _ <- addOutput tapEndSeq
+  pure $ Just "@TODO fix me"
+
+printState :: UsbBlasterState -> IO()
+printState s = putStrLn $ show (s^.usblOut) ++ ", " ++ show (s^.usblInReq) ++ ", " ++ show (s^.usblInReq)
 
 virAddrWrite, virAddrRead, virAddrOff :: Word8
 virAddrWrite = 0x02

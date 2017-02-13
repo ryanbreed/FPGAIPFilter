@@ -1,13 +1,20 @@
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 import qualified Data.Text as T
-import           JtagRW    (tapReset, toBits, fromBits, vdrWrite, vdrWriteRead,
-                            virAddrOff, virAddrRead, virAddrWrite, virWrite)
-import           LibFtdi   (DeviceHandle, ftdiDeInit, ftdiInit, ftdiUSBClose,
-                            ftdiUSBOpen, ftdiUSBReset, withFtdi)
+import qualified Data.ByteString as B
+import           JtagRW     ( UsbBlasterState
+                            , withUSBBlaster
+                            , toBits, fromBits
+                            , virWrite, vdrWrite, vdrWriteRead
+                            , virAddrOff, virAddrRead, virAddrWrite
+                            , flush
+                            , printState
+                            )
 import           Protolude
+-- import           Bytestring as B
 
--- FOR ./FPGA_CODE/JTAG_RW
+-- FOR ./FPGA_CODE/JTAG_RW_PKT_PROC
 vdrWidth :: Int
 vdrWidth = 12
 writeFlag :: Word16
@@ -15,49 +22,51 @@ writeFlag = 2 ^ (vdrWidth - 1)
 readMask :: Word16
 readMask = 2 ^ (vdrWidth - 1) - 1
 
-readVdr :: DeviceHandle -> IO (Int, [Bool])
-readVdr d  = do
-  l3 <- virWrite d virAddrRead
-  (l4, rd) <- vdrWriteRead d $ toBits vdrWidth (0 :: Word8)
-  return (l3 + l4, rd)
+readVdr :: (StateT UsbBlasterState) IO (Maybe [Bool])
+readVdr = do
+  _ <- virWrite virAddrRead
+  _ <- vdrWriteRead $ toBits vdrWidth (0::Word32)
+  flush
 
-outWrite :: DeviceHandle -> Word8 -> IO Int
-outWrite d v = do
-  l0 <- virWrite d virAddrWrite
-  l1 <- vdrWrite d $ toBits vdrWidth (fromIntegral v  * 8 + writeFlag)
-  (l4, rd) <- readVdr d
-  l5 <- virWrite d virAddrOff
-  putStrLn $ "W:" ++ show (fromIntegral v  * 8 + writeFlag) ++ ", " ++ show (fromBits rd)
-  -- threadDelay 20000
-  return $ l0 + l1 + l4 + l5
+outWrite :: Word8 -> (StateT UsbBlasterState) IO (Maybe ByteString)
+outWrite v = do
+  _ <- virWrite virAddrWrite
+  _ <- vdrWrite $ toBits vdrWidth (fromIntegral v  * 8 + writeFlag)
+  _ <- virWrite virAddrOff
+  _ <- flush
+  putStrLn $ "W:" ++ show (fromIntegral v  * 8 + writeFlag)  -- ++ ", " ++ show (fromBits rd)
+  return $ Just "todo"
 
-outRead :: DeviceHandle -> Word16 -> IO Int
-outRead d a = do
-  l0 <- virWrite d virAddrWrite
-  l1 <- vdrWrite d $ toBits vdrWidth (a .&. readMask)
-  (l4, rd) <- readVdr d
-  l5 <- virWrite d virAddrOff
-  let r = fromBits rd
-  putStrLn $ "R:" ++ show (a .&. readMask) ++ ", "
+outRead :: Word16 -> (StateT UsbBlasterState) IO (Maybe Int)
+outRead a = do
+  _ <- virWrite virAddrWrite
+  _ <- vdrWrite $ toBits vdrWidth (a .&. readMask)
+  rd <- readVdr
+  _ <- virWrite virAddrOff
+  let rn = fromBits <$> rd
+  case rn of
+    Just r -> putStrLn $ "R:" ++ show (a .&. readMask) ++ ", "
                   ++ show r ++ ", "
                   ++ show (r `div` 8 .&. 255) ++ ", "
                   ++ show (r .&. 7)
-  -- threadDelay 20000
-  return $ l0 + l1 + l4 + l5
+    Nothing -> putStrLn ("Error nothing read"::Text)
+  pure rn
 
-doStuff :: DeviceHandle -> IO ()
-doStuff d = do
-  ftdiUSBOpen d (0x09fb, 0x6001)
-  ftdiUSBReset d
-  _ <- mapM (outWrite d) $ join $ replicate 2 [0..255]
-  _ <- mapM (outRead d)  [0..2047]
-  putStrLn ("Init OK." :: Text)
-  ftdiUSBClose d
-  ftdiDeInit d
+doStuff :: (StateT UsbBlasterState) IO (Maybe B.ByteString)
+doStuff = do
+  _ <- mapM outWrite $ join $ replicate 2 [0..255]
+  _ <- mapM outRead [0..2047]
+  return Nothing
 
+-- virAddrBase :: Word16
+-- virAddrBase = 0x400 -- for one ram 0x100 -- for one hub jtag = 0x10
+--
+-- irAddrLen, virAddrLen :: Int
+-- irAddrLen  = 10
+-- virAddrLen = 12 -- for one ram 10 -- for one hub jtag instance = 5
 main :: IO ()
 main = do
-    dh <- ftdiInit
+    dh <- withUSBBlaster 0x400 10 12 doStuff
     case dh of
-      Left err -> putStrLn $ T.pack $ "Error:" ++ show err
-      Right _ -> withFtdi doStuff
+      Just err -> putStrLn $ T.pack $ "Error:" ++ show err
+      Nothing -> pure ()

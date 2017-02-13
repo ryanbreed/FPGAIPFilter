@@ -7,10 +7,14 @@ Description : JtagRW's main module
  DE0_Nano_JTAG_RW.
 -}
 module JtagRW
-    (
-      tapReset,
-      virAddrWrite, virAddrRead, virAddrOff,
-      virWrite, vdrWrite, vdrWriteRead, toBits, fromBits
+    ( virAddrWrite, virAddrRead, virAddrOff,
+      virWrite, vdrWrite, vdrWriteRead,
+      toBits, fromBits,
+      withUSBBlaster
+      , UsbBlasterState
+      , flush
+      , readInput
+      , printState
     ) where
 
 import Lib.Prelude
