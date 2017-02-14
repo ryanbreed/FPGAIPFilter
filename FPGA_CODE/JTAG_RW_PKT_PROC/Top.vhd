@@ -78,6 +78,14 @@ architecture syn of de0_nano_system is
 			; tck                : out std_logic                                        
          );
    end component jtagtestrw;
+	
+	component clckctrl is
+		port (
+			inclk  : in  std_logic := 'X'; -- inclk
+			ena    : in  std_logic := 'X'; -- ena
+			outclk : out std_logic         -- outclk
+		);
+	end component clckctrl;
    
 	signal sys_clk     : std_logic;
    signal clk_10      : std_logic;
@@ -98,8 +106,10 @@ architecture syn of de0_nano_system is
 	signal dbg_data    : std_logic_vector(15 downto 0);
 	signal dbg_clk     : std_logic;
 	signal dbg_trg     : std_logic;
+	signal dbg_rst_in  : std_logic;
 	
 	signal pp_reset    : std_logic;
+	signal pp_rst_in   : std_logic;
 	
 	function to_stdulogic( V: Boolean ) return std_ulogic is 
 	begin 
@@ -196,12 +206,20 @@ begin
 			, vdr_in      => vdr_in
          -- , vdr_in_rdy
          ); 
-				
+			
+	--  synchroniser on the pll_locked	
+	inst_pp_clk : clckctrl
+		port map (
+			inclk  => tck,
+			ena    => pll_locked,
+			outclk => pp_rst_in
+		);
+	 
 	inst_pp_reset : counter_hold 
       generic map 
 			( HOLD_FOR => 4 )
       port map 
-			( clk      => tck and pll_locked
+			( clk      => pp_rst_in
 			, hold_out => pp_reset
          );
 
@@ -210,13 +228,28 @@ begin
 			( input_0_0                     => vdr_out
 			, input_0_1                     => to_Boolean(vdr_out_rdy)
 			-- clock
-			, system1000                    => not tck
+			, system1000                    => tck
 			-- asynchronous reset: active low
 			, system1000_rstn               => pp_reset
 			, std_logic_vector(output_0_0)  => vdr_in(11 downto 3)
 			, to_stdulogic(output_0_1)      => vdr_in(2)
 			, to_stdulogic(output_0_2)      => vdr_in(1)
 			);
+			
+	inst_pkt_proc2 : packetprocessordf_topentity
+		port map 
+			( input_0_0                     => vdr_out
+			, input_0_1                     => to_Boolean(vdr_out_rdy)
+			-- clock
+			, system1000                    => tck
+			-- asynchronous reset: active low
+			, system1000_rstn               => pp_reset
+			--, std_logic_vector(output_0_0)  => dbg_data(15 downto 5)
+			, std_logic_vector(output_0_1)  => dbg_data(15 downto 5)
+			, std_logic_vector(output_0_2)  => dbg_data(4 downto 1)
+			--, std_logic_vector(output_0_3)  => dbg_data(1)
+			);
+		 
 	  
 --	Since we can't actively use the Signal2 logic analyser whilst using 
 --	Jtag for data we can capture some events here and extract when the 
@@ -226,7 +259,14 @@ begin
 --		begin_memory_edit -hardware_name "USB-Blaster \[1-1\]" -device_name "@1: EP3C25/EP4CE22 (0x020F30DD)"
 --		puts [read_content_from_memory -instance_index 0 -start_address 0 -word_count 8192 -content_in_hex]
 --		end_memory_edit
-	
+
+	inst_ds_clk : clckctrl
+		port map (
+			inclk  => sys_clk,
+			ena    => pll_locked,
+			outclk => dbg_clk
+		);
+		
 	inst_dbgsnap : dbgsnap
 		port map 
 			( clk => dbg_clk
@@ -234,8 +274,7 @@ begin
 			, dbg_in => dbg_data 
 			);	  
 	-- Just for testing...
-	dbg_clk <= (sys_clk) and pll_locked and pp_reset;
-	dbg_data <= vdr_out & tck & sdr & cdr & udr;
+	-- dbg_data <= vdr_out & tck & sdr & cdr & udr;
 	dbg_trg <= udr;
 
 	LED(7 downto 1) <= vdr_in(10 downto 4);
