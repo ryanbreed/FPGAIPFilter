@@ -523,11 +523,14 @@ set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ENABLE_ADVANCED_T
 set_global_assignment -name FLOW_ENABLE_RTL_VIEWER ON
 set_global_assignment -name TIMEQUEST_MULTICORNER_ANALYSIS ON
 set_global_assignment -name ENABLE_DRC_SETTINGS ON
+set_global_assignment -name VHDL_FILE PacketProcessorDF/packetprocessordf_testbench.vhdl
+set_global_assignment -name VHDL_FILE PacketProcessorDF/packetprocessordf_cnt_j_j1_j2.vhdl
+set_global_assignment -name VHDL_FILE PacketProcessorDF/packetprocessordf_cnt_j_j1.vhdl
+set_global_assignment -name VHDL_FILE PacketProcessorDF/packetprocessordf_cnt_j.vhdl
 set_global_assignment -name QSYS_FILE clckctrl.qsys
 set_global_assignment -name VHDL_FILE PacketProcessorDF/packetprocessordf_types.vhdl
 set_global_assignment -name VHDL_FILE PacketProcessorDF/packetprocessordf_topentity_0.vhdl
 set_global_assignment -name VHDL_FILE PacketProcessorDF/packetprocessordf_topentity.vhdl
-set_global_assignment -name VHDL_FILE PacketProcessorDF/packetprocessordf_testbench.vhdl
 set_global_assignment -name VHDL_FILE PacketProcessorDF/packetprocessordf_packetprocessor.vhdl
 set_global_assignment -name VHDL_FILE PacketProcessorDF/packetprocessordf_moore.vhdl
 set_global_assignment -name VHDL_FILE PacketProcessorDF/packetprocessordf_cnt.vhdl
@@ -549,5 +552,5 @@ set_global_assignment -name QIP_FILE dbgram.qip -library dbgram
 set_global_assignment -name VHDL_FILE counter_div_trig.vhd
 set_global_assignment -name VHDL_FILE dbgsnap.vhd
 set_global_assignment -name VHDL_FILE test/test_dbgsnap.vhd
-set_global_assignment -name SLD_FILE db/stp1_auto_stripped.stp
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
+set_global_assignment -name SLD_FILE db/stp1_auto_stripped.stp

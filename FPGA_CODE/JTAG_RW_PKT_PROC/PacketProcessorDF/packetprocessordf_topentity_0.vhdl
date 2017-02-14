@@ -17,9 +17,9 @@ entity packetprocessordf_topentity_0 is
 end;
 
 architecture structural of packetprocessordf_topentity_0 is
-  signal app_arg   : std_logic_vector(11 downto 0);
+  signal app_arg   : std_logic_vector(28 downto 0);
   signal app_arg_0 : boolean;
-  signal x         : std_logic_vector(11 downto 0);
+  signal x         : std_logic_vector(28 downto 0);
   signal y         : boolean;
 begin
   app_arg <= x;
