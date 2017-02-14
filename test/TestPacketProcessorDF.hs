@@ -8,7 +8,8 @@ import PacketProcessorDF
 
 testInput :: Signal (MemOp, Bool)
 testInput = stimuliGenerator $(listToVecTH
-  [ (WRITE 0x45, True)
+  [ (SETP 9 0xF0 0x10, True)
+  , (WRITE 0x45, True)
   , (WRITE 0x00, True)
   , (WRITE 0x00, True)
   , (WRITE 0x70, True)
@@ -124,4 +125,4 @@ testInput = stimuliGenerator $(listToVecTH
   ])
 
 main :: IO ()
-main = printX $ sampleN 9 $ topEntity testInput
+main = printX $ sampleN 13 $ topEntity testInput

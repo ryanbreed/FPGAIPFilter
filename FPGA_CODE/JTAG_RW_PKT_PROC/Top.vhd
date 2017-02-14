@@ -80,11 +80,11 @@ architecture syn of de0_nano_system is
    end component jtagtestrw;
 	
 	component clckctrl is
-		port (
-			inclk  : in  std_logic := 'X'; -- inclk
-			ena    : in  std_logic := 'X'; -- ena
-			outclk : out std_logic         -- outclk
-		);
+		port 
+			( inclk  : in  std_logic := 'X' -- inclk
+			; ena    : in  std_logic := 'X' -- ena
+			; outclk : out std_logic         -- outclk
+			);
 	end component clckctrl;
    
 	signal sys_clk     : std_logic;
@@ -102,6 +102,8 @@ architecture syn of de0_nano_system is
 	signal vdr_out     : std_logic_vector(11 downto 0);
 	signal vdr_out_rdy : std_logic;
 	signal vdr_in      : std_logic_vector(11 downto 0);
+	
+	signal pp2_vdr_out : std_logic_vector(28 downto 0);        
 	
 	signal dbg_data    : std_logic_vector(15 downto 0);
 	signal dbg_clk     : std_logic;
@@ -209,11 +211,11 @@ begin
 			
 	--  synchroniser on the pll_locked	
 	inst_pp_clk : clckctrl
-		port map (
-			inclk  => tck,
-			ena    => pll_locked,
-			outclk => pp_rst_in
-		);
+		port map 
+			( inclk  => tck
+			, ena    => pll_locked
+			, outclk => pp_rst_in
+			);
 	 
 	inst_pp_reset : counter_hold 
       generic map 
@@ -238,7 +240,7 @@ begin
 			
 	inst_pkt_proc2 : packetprocessordf_topentity
 		port map 
-			( input_0_0                     => vdr_out
+			( input_0_0                     => pp2_vdr_out
 			, input_0_1                     => to_Boolean(vdr_out_rdy)
 			-- clock
 			, system1000                    => tck
@@ -248,7 +250,9 @@ begin
 			, std_logic_vector(output_0_1)  => dbg_data(15 downto 5)
 			, std_logic_vector(output_0_2)  => dbg_data(4 downto 1)
 			--, std_logic_vector(output_0_3)  => dbg_data(1)
+			, to_stdulogic(output_0_8)      => dbg_data(0)
 			);
+	pp2_vdr_out <= vdr_out & "00000000000000000";
 		 
 	  
 --	Since we can't actively use the Signal2 logic analyser whilst using 
@@ -261,11 +265,11 @@ begin
 --		end_memory_edit
 
 	inst_ds_clk : clckctrl
-		port map (
-			inclk  => sys_clk,
-			ena    => pll_locked,
-			outclk => dbg_clk
-		);
+		port map 
+			( inclk  => sys_clk
+			, ena    => pll_locked
+			, outclk => dbg_clk
+			);
 		
 	inst_dbgsnap : dbgsnap
 		port map 

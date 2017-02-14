@@ -47,7 +47,7 @@ begin
       ,i               => i
       ,result          => result);
   
-  i <= packetprocessordf_types.tup2'(std_logic_vector'(0 to 11 => 'X'),true);
+  i <= packetprocessordf_types.tup2'(std_logic_vector'(0 to 28 => 'X'),true);
   
   finished <=
   -- pragma translate_off

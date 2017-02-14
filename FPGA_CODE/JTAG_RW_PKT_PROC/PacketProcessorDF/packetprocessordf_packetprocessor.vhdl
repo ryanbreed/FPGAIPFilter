@@ -8,7 +8,7 @@ use work.all;
 use work.packetprocessordf_types.all;
 
 entity packetprocessordf_packetprocessor is
-  port(memop           : in std_logic_vector(11 downto 0);
+  port(memop           : in std_logic_vector(28 downto 0);
        en              : in boolean;
        -- clock
        system1000      : in std_logic;
@@ -18,21 +18,34 @@ entity packetprocessordf_packetprocessor is
 end;
 
 architecture structural of packetprocessordf_packetprocessor is
-  signal app_arg    : std_logic_vector(9 downto 0);
-  signal case_alt   : std_logic_vector(9 downto 0);
-  signal case_alt_0 : std_logic_vector(9 downto 0);
+  signal app_arg    : std_logic_vector(28 downto 0);
+  signal case_alt   : std_logic_vector(28 downto 0);
+  signal case_alt_0 : std_logic_vector(28 downto 0);
+  signal case_alt_1 : std_logic_vector(28 downto 0);
   signal x          : unsigned(7 downto 0);
+  signal a          : unsigned(10 downto 0);
+  signal ms         : unsigned(7 downto 0);
+  signal p          : unsigned(7 downto 0);
 begin
   app_arg <= case_alt when en else
-             std_logic_vector'("10" & "00000000");
+             std_logic_vector'("11" & "000000000000000000000000000");
   
-  with (memop(11 downto 11)) select
-    case_alt <= std_logic_vector'("10" & "00000000") when "0",
-                case_alt_0 when others;
+  with (memop(28 downto 27)) select
+    case_alt <= std_logic_vector'("11" & "000000000000000000000000000") when "00",
+                case_alt_0 when "01",
+                case_alt_1 when others;
   
-  case_alt_0 <= std_logic_vector'("00" & std_logic_vector(x));
+  case_alt_0 <= std_logic_vector'("00" & std_logic_vector(x) & "0000000000000000000");
   
-  x <= unsigned(memop(10 downto 3));
+  case_alt_1 <= std_logic_vector'("01" & std_logic_vector(a) & std_logic_vector(ms) & std_logic_vector(p));
+  
+  x <= unsigned(memop(26 downto 19));
+  
+  a <= unsigned(memop(26 downto 16));
+  
+  ms <= unsigned(memop(15 downto 8));
+  
+  p <= unsigned(memop(7 downto 0));
   
   packetprocessordf_moore_result : entity packetprocessordf_moore
     port map
