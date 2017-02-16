@@ -14,7 +14,7 @@ import           JtagRW     ( UsbBlasterState
 import           PacketProcessorDF
 import           Protolude
 
--- FOR ./FPGA_CODE/JTAG_RW_PKT_PROC
+-- FOR ./FPGA_CODE/JTAG_RW_PKT_PROC_MOORE
 vdrWidth :: Int
 vdrWidth = 53
 
