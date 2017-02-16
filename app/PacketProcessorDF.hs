@@ -12,10 +12,11 @@
 module PacketProcessorDF
   ( packetProcessor
   , MemOp(..)
+  , CounterState(..)
   , DataV
   , MemAddr
   , topEntity
-  -- @todo missing `datatuplefst`, expectedOutput
+  , expectedOutput
   ) where
 
 import           CLaSH.Prelude
@@ -27,7 +28,7 @@ import           GHC.Generics    (Generic)
 type DataV = Unsigned 8
 type MemAddr = Unsigned 11
 
-data MemOp = READ MemAddr | WRITE DataV | SETP MemAddr DataV DataV
+data MemOp = READ MemAddr | WRITE DataV | SETP MemAddr DataV DataV | RESET
   deriving (Lift, Show, ShowX, Generic, NFData); -- For clash interactive
 
 data Counter = Increment DataV | SetPattern MemAddr DataV DataV | Reset | Off;
@@ -105,6 +106,7 @@ packetProcessor memOp en = counterOp
     getCounterOp m e = case (e, m) of
       (True, WRITE x) -> Increment x
       (True, SETP a ms p) -> SetPattern a ms p
+      (True, RESET) -> Reset
       (_, _) -> Off
 
 topEntity::Signal (MemOp, Bool) -- ^ Memory operation
@@ -125,7 +127,8 @@ testPattern =
 
 testInput :: Signal (MemOp, Bool)
 testInput = stimuliGenerator
-  (  (SETP 9 0xF0 0x10, True)
+  (  (RESET, True)
+  :> (SETP 9 0xF0 0x10, True)
   :> (WRITE 0x45, True)
   :> (WRITE 0x00, True)
   :> (WRITE 0x00, True)

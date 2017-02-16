@@ -216,7 +216,8 @@ ftdiReadWithTimeout d acc left iter delay =
             let newacc = acc `B.append` r
                 newleft = left - B.length r in
                   if newleft == 0
-                    then pure $ Just newacc
+                    then
+                      pure $ Just newacc
                     else do
                       threadDelay delay
                       ftdiReadWithTimeout d newacc newleft (iter - 1) delay
@@ -234,7 +235,7 @@ pwr2 = 1 : fmap (2*) pwr2
 
 fromBits::[Bool] -> Int
 fromBits [] = 0
-fromBits x = foldr addPwr 0 $ zip x pwr2
+fromBits x = foldr addPwr 0 $ zip (reverse x) pwr2
   where addPwr (b,n) a = if b then a + n else a
 
 -- @todo ignored returns, errors
@@ -270,6 +271,7 @@ vdrWriteRead b = do
   _ <- irWrite $ toBits (s^.usblIrAddrLen) irAddrVdr
   _ <- addOutput tapShiftVDRSeq
   _ <- addOutput $ mkJtagWriteRead b
+  _ <- flush -- @todo fix for large input?
   _ <- readInput $ length b
   _ <- addOutput tapEndSeq
   pure $ Just "@TODO fix me"
