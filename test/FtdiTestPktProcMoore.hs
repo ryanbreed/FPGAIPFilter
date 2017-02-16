@@ -50,7 +50,6 @@ toMaybeInt s d =
     then Just (d - s)
     else Nothing
 
---- @todo ARGHHGHGH!!! reverse reverse..
 bitsToState :: [Bool] -> Maybe PPState
 bitsToState b =
   if length b /= vdrWidth
