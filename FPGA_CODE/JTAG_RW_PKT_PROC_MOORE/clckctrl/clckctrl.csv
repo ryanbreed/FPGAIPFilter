@@ -1,0 +1,18 @@
+# system info clckctrl on 2017.02.14.10:23:56
+system_info:
+name,value
+DEVICE,EP4CE22F17C6
+DEVICE_FAMILY,Cyclone IV E
+GENERATION_ID,1487028236
+#
+#
+# Files generated for clckctrl on 2017.02.14.10:23:56
+files:
+filepath,kind,attributes,module,is_top
+simulation/clckctrl.vhd,VHDL,,clckctrl,true
+simulation/submodules/clckctrl_altclkctrl_0.v,VERILOG,,clckctrl_altclkctrl_0,false
+#
+# Map from instance-path to kind of module
+instances:
+instancePath,module
+clckctrl.altclkctrl_0,clckctrl_altclkctrl_0

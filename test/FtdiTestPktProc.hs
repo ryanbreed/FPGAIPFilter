@@ -34,14 +34,16 @@ outWrite v = do
   _ <- vdrWrite $ toBits vdrWidth (fromIntegral v  * 8 + writeFlag)
   _ <- virWrite virAddrOff
   _ <- flush
-  putStrLn $ "W:" ++ show (fromIntegral v  * 8 + writeFlag)  -- ++ ", " ++ show (fromBits rd)
+  putStrLn $ "W:" ++ show (fromIntegral v  * 8 + writeFlag)
   return $ Just "todo"
 
 outRead :: Word16 -> (StateT UsbBlasterState) IO (Maybe Int)
 outRead a = do
   _ <- virWrite virAddrWrite
   _ <- vdrWrite $ toBits vdrWidth (a .&. readMask)
+  _ <- flush
   rd <- readVdr
+  _ <- flush
   _ <- virWrite virAddrOff
   let rn = fromBits <$> rd
   case rn of

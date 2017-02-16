@@ -1,0 +1,18 @@
+# system info unnamed on 2017.02.14.10:22:37
+system_info:
+name,value
+DEVICE,EP4CE22F17C6
+DEVICE_FAMILY,Cyclone IV E
+GENERATION_ID,1487028156
+#
+#
+# Files generated for unnamed on 2017.02.14.10:22:37
+files:
+filepath,kind,attributes,module,is_top
+simulation/unnamed.vhd,VHDL,,unnamed,true
+simulation/submodules/unnamed_altclkctrl_0.v,VERILOG,,unnamed_altclkctrl_0,false
+#
+# Map from instance-path to kind of module
+instances:
+instancePath,module
+unnamed.altclkctrl_0,unnamed_altclkctrl_0

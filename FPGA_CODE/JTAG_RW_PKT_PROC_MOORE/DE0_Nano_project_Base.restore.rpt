@@ -1,0 +1,172 @@
+Restore Archived Project report for DE0_Nano_project_Base
+Fri Feb 17 00:17:10 2017
+Quartus Prime Version 16.1.1 Build 200 11/30/2016 SJ Lite Edition
+
+
+---------------------
+; Table of Contents ;
+---------------------
+  1. Legal Notice
+  2. Restore Archived Project Summary
+  3. Restore Archived Project Messages
+  4. Files Restored
+  5. Files Not Restored
+
+
+
+----------------
+; Legal Notice ;
+----------------
+Copyright (C) 2016  Intel Corporation. All rights reserved.
+Your use of Intel Corporation's design tools, logic functions 
+and other software and tools, and its AMPP partner logic 
+functions, and any output files from any of the foregoing 
+(including device programming or simulation files), and any 
+associated documentation or information are expressly subject 
+to the terms and conditions of the Intel Program License 
+Subscription Agreement, the Intel Quartus Prime License Agreement,
+the Intel MegaCore Function License Agreement, or other 
+applicable license agreement, including, without limitation, 
+that your use is for the sole purpose of programming logic 
+devices manufactured by Intel and sold by Intel or its 
+authorized distributors.  Please refer to the applicable 
+agreement for further details.
+
+
+
++-------------------------------------------------------------------------+
+; Restore Archived Project Summary                                        ;
++---------------------------------+---------------------------------------+
+; Restore Archived Project Status ; Successful - Fri Feb 17 00:17:10 2017 ;
+; Revision Name                   ; DE0_Nano_project_Base                 ;
+; Top-level Entity Name           ; de0_nano_system                       ;
+; Family                          ; Cyclone IV E                          ;
++---------------------------------+---------------------------------------+
+
+
++-----------------------------------+
+; Restore Archived Project Messages ;
++-----------------------------------+
+Info: Successfully restored '/home/jason/Develop/haskell/FPGAIPFilter_1/FPGA_CODE/JTAG_RW_PKT_PROC_MOORE/FPGA_Moore.qar'
+Info: Generated report 'DE0_Nano_project_Base.restore.rpt'
+Info (23030): Evaluation of Tcl script /opt/intelFPGA_lite/16.1/quartus/common/tcl/apps/qpm/qar.tcl was successful
+Info: Quartus Prime Shell was successful. 0 errors, 0 warnings
+    Info: Peak virtual memory: 1047 megabytes
+    Info: Processing ended: Fri Feb 17 00:17:10 2017
+    Info: Elapsed time: 00:00:00
+    Info: Total CPU time (on all processors): 00:00:00
+
+
++------------------------------------------------------------------------------------+
+; Files Restored                                                                     ;
++------------------------------------------------------------------------------------+
+; File Name                                                                          ;
++------------------------------------------------------------------------------------+
+; qar_info.json                                                                      ;
+; JTAG_RW_PKT_PROC/DE0_Nano.sdc                                                      ;
+; JTAG_RW_PKT_PROC/db/ip/clckctrl/clckctrl.v                                         ;
+; JTAG_RW_PKT_PROC/db/ip/clckctrl/submodules/clckctrl_altclkctrl_0.v                 ;
+; JTAG_RW_PKT_PROC_MOORE_1/DE0_Nano.sdc                                              ;
+; JTAG_RW_PKT_PROC_MOORE_1/DE0_Nano_project_Base.dse                                 ;
+; JTAG_RW_PKT_PROC_MOORE_1/DE0_Nano_project_Base.qpf                                 ;
+; JTAG_RW_PKT_PROC_MOORE_1/DE0_Nano_project_Base.qsf                                 ;
+; JTAG_RW_PKT_PROC_MOORE_1/DE0_Nano_project_Base_assignment_defaults.qdf             ;
+; JTAG_RW_PKT_PROC_MOORE_1/PacketProcessor/packetprocessor_blockram.vhdl             ;
+; JTAG_RW_PKT_PROC_MOORE_1/PacketProcessor/packetprocessor_packetprocessor.vhdl      ;
+; JTAG_RW_PKT_PROC_MOORE_1/PacketProcessor/packetprocessor_readnew.vhdl              ;
+; JTAG_RW_PKT_PROC_MOORE_1/PacketProcessor/packetprocessor_testbench.vhdl            ;
+; JTAG_RW_PKT_PROC_MOORE_1/PacketProcessor/packetprocessor_topentity.vhdl            ;
+; JTAG_RW_PKT_PROC_MOORE_1/PacketProcessor/packetprocessor_topentity_0.vhdl          ;
+; JTAG_RW_PKT_PROC_MOORE_1/PacketProcessor/packetprocessor_types.vhdl                ;
+; JTAG_RW_PKT_PROC_MOORE_1/PacketProcessorDF/packetprocessordf_cnt.vhdl              ;
+; JTAG_RW_PKT_PROC_MOORE_1/PacketProcessorDF/packetprocessordf_cnt_j.vhdl            ;
+; JTAG_RW_PKT_PROC_MOORE_1/PacketProcessorDF/packetprocessordf_cnt_j_j1.vhdl         ;
+; JTAG_RW_PKT_PROC_MOORE_1/PacketProcessorDF/packetprocessordf_cnt_j_j1_j2.vhdl      ;
+; JTAG_RW_PKT_PROC_MOORE_1/PacketProcessorDF/packetprocessordf_moore.vhdl            ;
+; JTAG_RW_PKT_PROC_MOORE_1/PacketProcessorDF/packetprocessordf_packetprocessor.vhdl  ;
+; JTAG_RW_PKT_PROC_MOORE_1/PacketProcessorDF/packetprocessordf_topentity.vhdl        ;
+; JTAG_RW_PKT_PROC_MOORE_1/PacketProcessorDF/packetprocessordf_topentity_0.vhdl      ;
+; JTAG_RW_PKT_PROC_MOORE_1/PacketProcessorDF/packetprocessordf_types.vhdl            ;
+; JTAG_RW_PKT_PROC_MOORE_1/Top.vhd                                                   ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl.qsys                                             ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl.sopcinfo                                         ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/clckctrl.bsf                                     ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/clckctrl.cmp                                     ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/clckctrl.csv                                     ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/clckctrl.html                                    ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/clckctrl.ppf                                     ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/clckctrl.spd                                     ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/clckctrl.xml                                     ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/clckctrl_bb.v                                    ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/clckctrl_generation.rpt                          ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/clckctrl_generation_previous.rpt                 ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/clckctrl_inst.v                                  ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/clckctrl_inst.vhd                                ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/greybox/clckctrl.v                               ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/greybox/unnamed.v                                ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/simulation/aldec/rivierapro_setup.tcl            ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/simulation/cadence/cds.lib                       ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/simulation/cadence/cds_libs/altclkctrl_0.cds.lib ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/simulation/cadence/hdl.var                       ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/simulation/cadence/ncsim_setup.sh                ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/simulation/clckctrl.sip                          ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/simulation/clckctrl.vhd                          ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/simulation/mentor/msim_setup.tcl                 ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/simulation/submodules/clckctrl_altclkctrl_0.v    ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/simulation/submodules/unnamed_altclkctrl_0.v     ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/simulation/synopsys/vcsmx/synopsys_sim.setup     ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/simulation/synopsys/vcsmx/vcsmx_setup.sh         ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/simulation/unnamed.sip                           ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/simulation/unnamed.vhd                           ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/synthesis/clckctrl.debuginfo                     ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/synthesis/clckctrl.qip                           ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/synthesis/clckctrl.vhd                           ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/synthesis/submodules/clckctrl_altclkctrl_0.v     ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/synthesis/submodules/unnamed_altclkctrl_0.v      ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/synthesis/unnamed.debuginfo                      ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/synthesis/unnamed.qip                            ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/synthesis/unnamed.vhd                            ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/unnamed.bsf                                      ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/unnamed.cmp                                      ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/unnamed.csv                                      ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/unnamed.html                                     ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/unnamed.ppf                                      ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/unnamed.spd                                      ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/unnamed.xml                                      ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/unnamed_bb.v                                     ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/unnamed_generation.rpt                           ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/unnamed_inst.v                                   ;
+; JTAG_RW_PKT_PROC_MOORE_1/clckctrl/unnamed_inst.vhd                                 ;
+; JTAG_RW_PKT_PROC_MOORE_1/counter_div.vhd                                           ;
+; JTAG_RW_PKT_PROC_MOORE_1/counter_div_trig.vhd                                      ;
+; JTAG_RW_PKT_PROC_MOORE_1/counter_hold.vhd                                          ;
+; JTAG_RW_PKT_PROC_MOORE_1/db/stp1_auto_stripped.stp                                 ;
+; JTAG_RW_PKT_PROC_MOORE_1/dbgram.cmp                                                ;
+; JTAG_RW_PKT_PROC_MOORE_1/dbgram.qip                                                ;
+; JTAG_RW_PKT_PROC_MOORE_1/dbgram.vhd                                                ;
+; JTAG_RW_PKT_PROC_MOORE_1/dbgsnap.vhd                                               ;
+; JTAG_RW_PKT_PROC_MOORE_1/jtagif2.vhd                                               ;
+; JTAG_RW_PKT_PROC_MOORE_1/jtagtestrw.qsys                                           ;
+; JTAG_RW_PKT_PROC_MOORE_1/jtagtestrw.sopcinfo                                       ;
+; JTAG_RW_PKT_PROC_MOORE_1/jtagtestrw/jtagtestrw.cmp                                 ;
+; JTAG_RW_PKT_PROC_MOORE_1/jtagtestrw/synthesis/jtagtestrw.debuginfo                 ;
+; JTAG_RW_PKT_PROC_MOORE_1/jtagtestrw/synthesis/jtagtestrw.qip                       ;
+; JTAG_RW_PKT_PROC_MOORE_1/jtagtestrw/synthesis/jtagtestrw.vhd                       ;
+; JTAG_RW_PKT_PROC_MOORE_1/pll_sys.cmp                                               ;
+; JTAG_RW_PKT_PROC_MOORE_1/pll_sys.ppf                                               ;
+; JTAG_RW_PKT_PROC_MOORE_1/pll_sys.qip                                               ;
+; JTAG_RW_PKT_PROC_MOORE_1/pll_sys.vhd                                               ;
+; JTAG_RW_PKT_PROC_MOORE_1/pll_sys_inst.vhd                                          ;
+; JTAG_RW_PKT_PROC_MOORE_1/pll_sys_syn.v                                             ;
+; JTAG_RW_PKT_PROC_MOORE_1/stp1.stp                                                  ;
+; JTAG_RW_PKT_PROC_MOORE_1/test/test_dbgsnap.vhd                                     ;
++------------------------------------------------------------------------------------+
+
+
++--------------------+
+; Files Not Restored ;
++--------------------+
+; File Name          ;
++--------------------+
+
+

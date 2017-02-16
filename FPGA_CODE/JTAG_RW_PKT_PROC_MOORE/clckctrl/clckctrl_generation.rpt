@@ -1,0 +1,72 @@
+Info: Starting: Create simulation model
+Info: qsys-generate /home/jason/Develop/haskell/FPGAIPFilter_1/FPGA_CODE/JTAG_RW_PKT_PROC/clckctrl.qsys --simulation=VHDL --allow-mixed-language-simulation --output-directory=/home/jason/Develop/haskell/FPGAIPFilter_1/FPGA_CODE/JTAG_RW_PKT_PROC/clckctrl/simulation --family="Cyclone IV E" --part=EP4CE22F17C6
+Progress: Loading JTAG_RW_PKT_PROC/clckctrl.qsys
+Progress: Reading input file
+Progress: Adding altclkctrl_0 [altclkctrl 16.1]
+Progress: Parameterizing module altclkctrl_0
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+: clckctrl.altclkctrl_0: Targeting device family: Cyclone IV E.
+: clckctrl.altclkctrl_0: Global clock network allows a clock signal to reach all parts of the chip with the same amount of skew. Input port 'clkselect' can be used to switch between four clock inputs.
+Info: clckctrl: Generating clckctrl "clckctrl" for SIM_VHDL
+Info: altclkctrl_0: Generating top-level entity clckctrl_altclkctrl_0.
+Info: altclkctrl_0: "clckctrl" instantiated altclkctrl "altclkctrl_0"
+Info: clckctrl: Done "clckctrl" with 2 modules, 2 files
+Info: qsys-generate succeeded.
+Info: Finished: Create simulation model
+Info: Starting: Create Modelsim Project.
+Info: sim-script-gen --spd=/home/jason/Develop/haskell/FPGAIPFilter_1/FPGA_CODE/JTAG_RW_PKT_PROC/clckctrl/clckctrl.spd --output-directory=/home/jason/Develop/haskell/FPGAIPFilter_1/FPGA_CODE/JTAG_RW_PKT_PROC/clckctrl/simulation/ --use-relative-paths=true
+Info: Doing: ip-make-simscript --spd=/home/jason/Develop/haskell/FPGAIPFilter_1/FPGA_CODE/JTAG_RW_PKT_PROC/clckctrl/clckctrl.spd --output-directory=/home/jason/Develop/haskell/FPGAIPFilter_1/FPGA_CODE/JTAG_RW_PKT_PROC/clckctrl/simulation/ --use-relative-paths=true
+Info: Generating the following file(s) for MODELSIM simulator in /home/jason/Develop/haskell/FPGAIPFilter_1/FPGA_CODE/JTAG_RW_PKT_PROC/clckctrl/simulation/ directory:
+Info: 	mentor/msim_setup.tcl
+Info: Skipping VCS script generation since VHDL file $QUARTUS_INSTALL_DIR/eda/sim_lib/altera_syn_attributes.vhd is required for simulation
+Info: Generating the following file(s) for VCSMX simulator in /home/jason/Develop/haskell/FPGAIPFilter_1/FPGA_CODE/JTAG_RW_PKT_PROC/clckctrl/simulation/ directory:
+Info: 	synopsys/vcsmx/synopsys_sim.setup
+Info: 	synopsys/vcsmx/vcsmx_setup.sh
+Info: Generating the following file(s) for NCSIM simulator in /home/jason/Develop/haskell/FPGAIPFilter_1/FPGA_CODE/JTAG_RW_PKT_PROC/clckctrl/simulation/ directory:
+Info: 	cadence/cds.lib
+Info: 	cadence/hdl.var
+Info: 	cadence/ncsim_setup.sh
+Info: 	1 .cds.lib files in cadence/cds_libs/ directory
+Info: Generating the following file(s) for RIVIERA simulator in /home/jason/Develop/haskell/FPGAIPFilter_1/FPGA_CODE/JTAG_RW_PKT_PROC/clckctrl/simulation/ directory:
+Info: 	aldec/rivierapro_setup.tcl
+Info: For information on how to simulate your IP, see the explanatory comments in the simulator-specific subdirectories under /home/jason/Develop/haskell/FPGAIPFilter_1/FPGA_CODE/JTAG_RW_PKT_PROC/clckctrl/simulation/.
+Info: Regenerate these scripts whenever you make any change to any Quartus-generated IP in your project.
+Info: Finished: Create Modelsim Project.
+Info: Starting: Create block symbol file (.bsf)
+Info: qsys-generate /home/jason/Develop/haskell/FPGAIPFilter_1/FPGA_CODE/JTAG_RW_PKT_PROC/clckctrl.qsys --block-symbol-file --output-directory=/home/jason/Develop/haskell/FPGAIPFilter_1/FPGA_CODE/JTAG_RW_PKT_PROC/clckctrl --family="Cyclone IV E" --part=EP4CE22F17C6
+Progress: Loading JTAG_RW_PKT_PROC/clckctrl.qsys
+Progress: Reading input file
+Progress: Adding altclkctrl_0 [altclkctrl 16.1]
+Progress: Parameterizing module altclkctrl_0
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+: clckctrl.altclkctrl_0: Targeting device family: Cyclone IV E.
+: clckctrl.altclkctrl_0: Global clock network allows a clock signal to reach all parts of the chip with the same amount of skew. Input port 'clkselect' can be used to switch between four clock inputs.
+Info: qsys-generate succeeded.
+Info: Finished: Create block symbol file (.bsf)
+Info: 
+Info: Starting: Create HDL design files for synthesis
+Info: qsys-generate /home/jason/Develop/haskell/FPGAIPFilter_1/FPGA_CODE/JTAG_RW_PKT_PROC/clckctrl.qsys --synthesis=VHDL --greybox --output-directory=/home/jason/Develop/haskell/FPGAIPFilter_1/FPGA_CODE/JTAG_RW_PKT_PROC/clckctrl/synthesis --family="Cyclone IV E" --part=EP4CE22F17C6
+Progress: Loading JTAG_RW_PKT_PROC/clckctrl.qsys
+Progress: Reading input file
+Progress: Adding altclkctrl_0 [altclkctrl 16.1]
+Progress: Parameterizing module altclkctrl_0
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+: clckctrl.altclkctrl_0: Targeting device family: Cyclone IV E.
+: clckctrl.altclkctrl_0: Global clock network allows a clock signal to reach all parts of the chip with the same amount of skew. Input port 'clkselect' can be used to switch between four clock inputs.
+Info: clckctrl: Generating clckctrl "clckctrl" for QUARTUS_SYNTH
+Info: altclkctrl_0: Generating top-level entity clckctrl_altclkctrl_0.
+Info: altclkctrl_0: "clckctrl" instantiated altclkctrl "altclkctrl_0"
+Info: clckctrl: Done "clckctrl" with 2 modules, 2 files
+Info: Generating third-party timing and resource estimation model ...
+Info: Done generating third-party timing and resource estimation model.
+Info: qsys-generate succeeded.
+Info: Finished: Create HDL design files for synthesis
