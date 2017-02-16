@@ -45,7 +45,7 @@ outRead a = do
   rd <- readVdr
   _ <- flush
   _ <- virWrite virAddrOff
-  let rn = fromBits <$> rd
+  let rn = fromBits . reverse <$> rd
   case rn of
     Just r -> putStrLn $ "R:" ++ show (a .&. readMask) ++ ", "
                   ++ show r ++ ", "
